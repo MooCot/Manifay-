@@ -25,29 +25,30 @@ const isEmpty = computed(() => !isLoading.value && !error.value && !data.value?.
     <div v-else-if="isEmpty" class="text-gray-500">Інвойсів ще немає.</div>
 
     <template v-else>
-      <!-- min-h-0 + min-w-0 обов'язкові для flex-дитини з overflow — інакше
-           вона не стискається нижче min-content розміру вмісту (тут — 640px
-           таблиці) і замість внутрішнього скролу розтягує всю сторінку
-           (класична flexbox-пастка, та сама, що з min-h-0, тільки по X) -->
-      <div class="thin-scrollbar min-h-0 min-w-0 flex-1 overflow-auto">
-        <table class="w-full min-w-[640px] border-collapse text-left text-sm">
+      <!-- min-h-0 обов'язковий для flex-дитини з overflow — інакше вона не
+           стискається і скрол не спрацьовує (класична flexbox-пастка).
+           overflow-x-hidden — горизонтального скролу немає взагалі: на
+           мобільному колонок менше (sm:table-cell ховає зайві), тому нема
+           причини таблиці бути ширшою за екран -->
+      <div class="thin-scrollbar min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto">
+        <table class="w-full border-collapse text-left text-sm">
           <thead class="sticky top-0 bg-white">
             <tr class="border-b text-gray-500">
               <th class="py-2">Номер</th>
-              <th class="py-2">Постачальник</th>
-              <th class="py-2">Сума (брутто)</th>
+              <th class="hidden py-2 sm:table-cell">Постачальник</th>
+              <th class="hidden py-2 sm:table-cell">Сума (брутто)</th>
               <th class="py-2">Статус</th>
-              <th class="py-2">Термін оплати</th>
+              <th class="hidden py-2 sm:table-cell">Термін оплати</th>
             </tr>
           </thead>
           <tbody>
             <template v-if="isLoading">
               <tr v-for="i in 8" :key="i" class="border-b">
                 <td class="py-2"><div class="h-4 w-24 animate-pulse rounded bg-gray-200" /></td>
-                <td class="py-2"><div class="h-4 w-32 animate-pulse rounded bg-gray-200" /></td>
-                <td class="py-2"><div class="h-4 w-20 animate-pulse rounded bg-gray-200" /></td>
+                <td class="hidden py-2 sm:table-cell"><div class="h-4 w-32 animate-pulse rounded bg-gray-200" /></td>
+                <td class="hidden py-2 sm:table-cell"><div class="h-4 w-20 animate-pulse rounded bg-gray-200" /></td>
                 <td class="py-2"><div class="h-5 w-16 animate-pulse rounded-full bg-gray-200" /></td>
-                <td class="py-2"><div class="h-4 w-20 animate-pulse rounded bg-gray-200" /></td>
+                <td class="hidden py-2 sm:table-cell"><div class="h-4 w-20 animate-pulse rounded bg-gray-200" /></td>
               </tr>
             </template>
             <template v-else>
@@ -62,11 +63,15 @@ const isEmpty = computed(() => !isLoading.value && !error.value && !data.value?.
                 @keydown.enter="navigateTo(`/invoices/${invoice.id}`)"
                 @keydown.space.prevent="navigateTo(`/invoices/${invoice.id}`)"
               >
-                <td class="max-w-[200px] truncate py-2" :title="invoice.number">{{ invoice.number }}</td>
-                <td class="max-w-[220px] truncate py-2" :title="invoice.supplier_name">{{ invoice.supplier_name }}</td>
-                <td class="py-2">{{ invoice.gross_amount }} {{ invoice.currency }}</td>
+                <td class="max-w-[160px] truncate py-2 sm:max-w-[200px]" :title="invoice.number">
+                  {{ invoice.number }}
+                </td>
+                <td class="hidden max-w-[220px] truncate py-2 sm:table-cell" :title="invoice.supplier_name">
+                  {{ invoice.supplier_name }}
+                </td>
+                <td class="hidden py-2 sm:table-cell">{{ invoice.gross_amount }} {{ invoice.currency }}</td>
                 <td class="py-2"><InvoiceStatusBadge :status="invoice.status" /></td>
-                <td class="py-2">{{ invoice.due_date }}</td>
+                <td class="hidden py-2 sm:table-cell">{{ invoice.due_date }}</td>
               </tr>
             </template>
           </tbody>
