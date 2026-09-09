@@ -55,7 +55,7 @@ function onRowActivate(invoice: Invoice) {
 
 <template>
   <div class="mx-auto flex h-dvh max-w-5xl flex-col p-4 sm:p-6">
-    <div class="mb-4 flex shrink-0 items-center justify-between gap-2">
+    <div class="mb-4 flex shrink-0 flex-wrap items-center justify-between gap-2">
       <h1 class="text-xl font-semibold">Інвойси</h1>
       <label>
         <span class="sr-only">Сортування</span>
@@ -66,8 +66,8 @@ function onRowActivate(invoice: Invoice) {
         >
           <option value="created_at-desc">Спочатку нові</option>
           <option value="created_at-asc">Спочатку старі</option>
-          <option value="due_date-asc">Термін оплати: спочатку раніші</option>
-          <option value="due_date-desc">Термін оплати: спочатку пізніші</option>
+          <option value="due_date-asc">Термін оплати ↑</option>
+          <option value="due_date-desc">Термін оплати ↓</option>
         </select>
       </label>
     </div>
