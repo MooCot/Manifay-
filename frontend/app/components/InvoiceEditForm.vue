@@ -116,8 +116,9 @@ const onSubmit = handleSubmit(async (formValues) => {
     <p v-if="submitError" role="alert" class="text-sm text-red-600">{{ submitError }}</p>
 
     <button
+      v-if="editable"
       type="submit"
-      :disabled="!editable || isSubmitting"
+      :disabled="isSubmitting"
       class="rounded bg-indigo-600 px-4 py-2 text-white disabled:opacity-50"
     >
       Зберегти
