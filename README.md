@@ -21,6 +21,15 @@ docker compose up
 - Backend API: http://localhost:8000/api
 - При першому старті `backend`-сервіс сам виконує `composer install`, міграції та сідинг (демо-дані, включно з approved/rejected інвойсами).
 
+## Якість коду
+
+```bash
+docker compose exec backend composer lint      # Pint — форматування
+docker compose exec backend composer analyse   # Larastan — статичний аналіз
+docker compose exec frontend npm run lint       # ESLint
+docker compose exec frontend npm run typecheck  # vue-tsc
+```
+
 ## API
 
 | Метод | Шлях | Опис |

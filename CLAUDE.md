@@ -149,6 +149,20 @@ GitHub/GitLab репозиторій, README.md з відповідями, ін�
 
 6. **CORS** — увімкнено напряму на бекенді (`config/cors.php`, `allowed_origins` = `FRONTEND_URL` з `.env`), без Nuxt server-проксі. Простіше для двоконтейнерного docker-compose (backend:8000 + frontend:3000), не додає зайвого проміжного шару заради задачі, де його немає що ховати.
 
+## Статичний аналіз (простіше, ніж у wtgspain)
+
+Без GrumPHP-оркестрації, без Deptrac (немає Ports/шарів — нічим перевіряти межі), без git-хуків. Просто команди, запускаються вручну.
+
+- **Backend:** `composer lint` (Laravel Pint, форматування) + `composer analyse` (Larastan/PHPStan рівень 5).
+- **Frontend:** `npm run lint` (`@nuxt/eslint`, офіційний zero-config модуль) + `npm run typecheck` (`nuxt typecheck` через vue-tsc).
+
+**Знахідки під час першого прогону (не косметика, реальні речі):**
+- Larastan не резолвив типи з Laravel 12-івського `casts(): array`-методу (каскадом ламало аналіз `UseCase`/`FormRequest`) — повернув класичний `protected $casts = [...]`, поведінково ідентично.
+- `InvoiceResource`'у бракувало `@mixin Invoice` — без нього Larastan не знає, які magic-властивості (`$this->id` тощо) валідні.
+- `zod` встановився в 4.x (не запінили версію при `npm install`), хоча `@vee-validate/zod` вимагає `^3.24` — невідповідність із власною ж таблицею версій у CLAUDE.md. Запінено `^3.24`.
+- `typescript` резолвнувся в experimental `^7.0` (несумісно з `typescript-eslint`) — запінено `^5.7`.
+- zod-схема типізувала `due_date` як `Date` (`z.coerce.date()`), а HTML `<input type="date">` і API працюють зі string — typecheck зловив розходження типів. Порівняння дат лишилось у `.refine()`, тип поля став `string`.
+
 ## Архітектура бекенду
 
 **Схема:** `Controller (тонкий)` → `UseCase` → `Repository` (Eloquent). **Без Ports/інтерфейсів, без окремого Domain-шару.**
