@@ -17,10 +17,15 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // ідемпотентність — docker-compose виконує db:seed --force при
+        // кожному старті контейнера з persisted db_data volume, а не тільки
+        // один раз (той самий привід, що й у InvoiceSeeder)
+        if (! User::query()->where('email', 'test@example.com')->exists()) {
+            User::factory()->create([
+                'name' => 'Test User',
+                'email' => 'test@example.com',
+            ]);
+        }
 
         $this->call(InvoiceSeeder::class);
     }
