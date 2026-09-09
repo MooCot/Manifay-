@@ -7,7 +7,10 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class InvoiceRepository
 {
-    public function paginate(int $perPage = 15): LengthAwarePaginator
+    // менше рядків на сторінку — таблиця комфортно влазить на екран без
+    // прокрутки на типовій висоті viewport (замість динамічного розрахунку
+    // під висоту вікна, що крихкіше й вимагає resize-логіки на фронтенді)
+    public function paginate(int $perPage = 8): LengthAwarePaginator
     {
         return Invoice::query()->orderByDesc('created_at')->paginate($perPage);
     }
