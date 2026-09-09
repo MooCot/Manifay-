@@ -9,7 +9,7 @@ const emit = defineEmits<{ saved: [Invoice] }>()
 
 const editable = computed(() => props.invoice.status === 'pending')
 
-const { handleSubmit, errors, defineField, isSubmitting } = useForm({
+const { handleSubmit, errors, defineField, isSubmitting, setErrors } = useForm({
   validationSchema: toTypedSchema(createInvoiceEditSchema(props.invoice.issue_date)),
   initialValues: {
     net_amount: Number(props.invoice.net_amount),
@@ -44,6 +44,13 @@ const onSubmit = handleSubmit(async (formValues) => {
   } catch (e: unknown) {
     const status = e && typeof e === 'object' && 'status' in e ? (e as { status?: number }).status : undefined
     if (status === 422) {
+      // сервер валідує суворіше за клієнтську zod-схему (наприклад max на
+      // сумі) — без цього користувач бачив загальний текст без пояснення,
+      // яке саме поле й чому не пройшло
+      const data = (e as { data?: { errors?: Record<string, string[]> } }).data
+      if (data?.errors) {
+        setErrors(data.errors)
+      }
       submitError.value = 'Дані не пройшли валідацію на сервері.'
     } else if (status === 409) {
       submitError.value = 'Статус інвойсу змінився — оновіть сторінку.'
