@@ -62,49 +62,58 @@ const onSubmit = handleSubmit(async (formValues) => {
     </p>
 
     <div>
-      <label class="mb-1 block text-sm font-medium">Сума нетто</label>
+      <label for="net_amount" class="mb-1 block text-sm font-medium">Сума нетто</label>
       <input
+        id="net_amount"
         v-model="netAmount"
         v-bind="netAmountAttrs"
         type="number"
         step="0.01"
         :disabled="!editable"
+        :aria-invalid="!!errors.net_amount"
+        :aria-describedby="errors.net_amount ? 'net_amount-error' : undefined"
         class="w-full rounded border px-3 py-2 disabled:bg-gray-100"
       >
-      <p v-if="errors.net_amount" class="mt-1 text-sm text-red-600">{{ errors.net_amount }}</p>
+      <p v-if="errors.net_amount" id="net_amount-error" class="mt-1 text-sm text-red-600">{{ errors.net_amount }}</p>
     </div>
 
     <div>
-      <label class="mb-1 block text-sm font-medium">ПДВ</label>
+      <label for="vat_amount" class="mb-1 block text-sm font-medium">ПДВ</label>
       <input
+        id="vat_amount"
         v-model="vatAmount"
         v-bind="vatAmountAttrs"
         type="number"
         step="0.01"
         :disabled="!editable"
+        :aria-invalid="!!errors.vat_amount"
+        :aria-describedby="errors.vat_amount ? 'vat_amount-error' : undefined"
         class="w-full rounded border px-3 py-2 disabled:bg-gray-100"
       >
-      <p v-if="errors.vat_amount" class="mt-1 text-sm text-red-600">{{ errors.vat_amount }}</p>
+      <p v-if="errors.vat_amount" id="vat_amount-error" class="mt-1 text-sm text-red-600">{{ errors.vat_amount }}</p>
     </div>
 
     <div>
-      <label class="mb-1 block text-sm font-medium">Сума брутто (розраховується автоматично)</label>
-      <input :value="grossPreview" disabled class="w-full rounded border bg-gray-100 px-3 py-2">
+      <label for="gross_amount" class="mb-1 block text-sm font-medium">Сума брутто (розраховується автоматично)</label>
+      <input id="gross_amount" :value="grossPreview" disabled class="w-full rounded border bg-gray-100 px-3 py-2">
     </div>
 
     <div>
-      <label class="mb-1 block text-sm font-medium">Термін оплати</label>
+      <label for="due_date" class="mb-1 block text-sm font-medium">Термін оплати</label>
       <input
+        id="due_date"
         v-model="dueDate"
         v-bind="dueDateAttrs"
         type="date"
         :disabled="!editable"
+        :aria-invalid="!!errors.due_date"
+        :aria-describedby="errors.due_date ? 'due_date-error' : undefined"
         class="w-full rounded border px-3 py-2 disabled:bg-gray-100"
       >
-      <p v-if="errors.due_date" class="mt-1 text-sm text-red-600">{{ errors.due_date }}</p>
+      <p v-if="errors.due_date" id="due_date-error" class="mt-1 text-sm text-red-600">{{ errors.due_date }}</p>
     </div>
 
-    <p v-if="submitError" class="text-sm text-red-600">{{ submitError }}</p>
+    <p v-if="submitError" role="alert" class="text-sm text-red-600">{{ submitError }}</p>
 
     <button
       type="submit"

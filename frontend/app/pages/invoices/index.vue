@@ -52,8 +52,13 @@ const isEmpty = computed(() => !isLoading.value && !error.value && !data.value?.
               <tr
                 v-for="invoice in data?.data"
                 :key="invoice.id"
-                class="cursor-pointer border-b hover:bg-gray-50"
+                tabindex="0"
+                role="link"
+                :aria-label="`Переглянути інвойс ${invoice.number}`"
+                class="cursor-pointer border-b hover:bg-gray-50 focus:bg-gray-50 focus:outline-2 focus:outline-indigo-500 focus:-outline-offset-2"
                 @click="navigateTo(`/invoices/${invoice.id}`)"
+                @keydown.enter="navigateTo(`/invoices/${invoice.id}`)"
+                @keydown.space.prevent="navigateTo(`/invoices/${invoice.id}`)"
               >
                 <td class="max-w-[200px] truncate py-2" :title="invoice.number">{{ invoice.number }}</td>
                 <td class="max-w-[220px] truncate py-2" :title="invoice.supplier_name">{{ invoice.supplier_name }}</td>
