@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { Invoice } from '~/types/invoice'
+
 const route = useRoute()
 const router = useRouter()
 
@@ -11,6 +13,25 @@ const { data, status, error, refresh } = await useInvoices(page)
 
 const isLoading = computed(() => status.value === 'pending')
 const isEmpty = computed(() => !isLoading.value && !error.value && !data.value?.data?.length)
+
+// на мобільному в рядку видно лише номер+статус (sm:table-cell ховає решту) —
+// клік розгортає приховані поля inline, а не одразу веде на іншу сторінку
+// (double-tap-навігація — антипатерн: конфліктує з нативним zoom-жестом,
+// нульова discoverability). На sm+ усі поля вже видно, тому клік одразу
+// переходить на деталі, як і раніше
+const expandedId = ref<number | null>(null)
+
+function isDesktopViewport(): boolean {
+  return typeof window !== 'undefined' && window.matchMedia('(min-width: 640px)').matches
+}
+
+function onRowActivate(invoice: Invoice) {
+  if (isDesktopViewport()) {
+    navigateTo(`/invoices/${invoice.id}`)
+  } else {
+    expandedId.value = expandedId.value === invoice.id ? null : invoice.id
+  }
+}
 </script>
 
 <template>
@@ -52,27 +73,49 @@ const isEmpty = computed(() => !isLoading.value && !error.value && !data.value?.
               </tr>
             </template>
             <template v-else>
-              <tr
-                v-for="invoice in data?.data"
-                :key="invoice.id"
-                tabindex="0"
-                role="link"
-                :aria-label="`Переглянути інвойс ${invoice.number}`"
-                class="cursor-pointer border-b hover:bg-gray-50 focus:bg-gray-50 focus:outline-2 focus:outline-indigo-500 focus:-outline-offset-2"
-                @click="navigateTo(`/invoices/${invoice.id}`)"
-                @keydown.enter="navigateTo(`/invoices/${invoice.id}`)"
-                @keydown.space.prevent="navigateTo(`/invoices/${invoice.id}`)"
-              >
-                <td class="max-w-[160px] truncate py-2 sm:max-w-[200px]" :title="invoice.number">
-                  {{ invoice.number }}
-                </td>
-                <td class="hidden max-w-[220px] truncate py-2 sm:table-cell" :title="invoice.supplier_name">
-                  {{ invoice.supplier_name }}
-                </td>
-                <td class="hidden py-2 sm:table-cell">{{ invoice.gross_amount }} {{ invoice.currency }}</td>
-                <td class="py-2"><InvoiceStatusBadge :status="invoice.status" /></td>
-                <td class="hidden py-2 sm:table-cell">{{ invoice.due_date }}</td>
-              </tr>
+              <template v-for="invoice in data?.data" :key="invoice.id">
+                <tr
+                  tabindex="0"
+                  role="button"
+                  :aria-expanded="expandedId === invoice.id"
+                  :aria-label="`Інвойс ${invoice.number}`"
+                  class="cursor-pointer border-b hover:bg-gray-50 focus:bg-gray-50 focus:outline-2 focus:outline-indigo-500 focus:-outline-offset-2"
+                  @click="onRowActivate(invoice)"
+                  @keydown.enter="onRowActivate(invoice)"
+                  @keydown.space.prevent="onRowActivate(invoice)"
+                >
+                  <td class="max-w-[160px] truncate py-2 sm:max-w-[200px]" :title="invoice.number">
+                    {{ invoice.number }}
+                  </td>
+                  <td class="hidden max-w-[220px] truncate py-2 sm:table-cell" :title="invoice.supplier_name">
+                    {{ invoice.supplier_name }}
+                  </td>
+                  <td class="hidden py-2 sm:table-cell">{{ invoice.gross_amount }} {{ invoice.currency }}</td>
+                  <td class="py-2"><InvoiceStatusBadge :status="invoice.status" /></td>
+                  <td class="hidden py-2 sm:table-cell">{{ invoice.due_date }}</td>
+                </tr>
+                <tr v-if="expandedId === invoice.id" class="border-b bg-gray-50 sm:hidden">
+                  <td colspan="5" class="px-2 py-3 text-sm">
+                    <dl class="space-y-1">
+                      <div class="flex justify-between">
+                        <dt class="text-gray-500">Постачальник</dt>
+                        <dd>{{ invoice.supplier_name }}</dd>
+                      </div>
+                      <div class="flex justify-between">
+                        <dt class="text-gray-500">Сума</dt>
+                        <dd>{{ invoice.gross_amount }} {{ invoice.currency }}</dd>
+                      </div>
+                      <div class="flex justify-between">
+                        <dt class="text-gray-500">Термін оплати</dt>
+                        <dd>{{ invoice.due_date }}</dd>
+                      </div>
+                    </dl>
+                    <NuxtLink :to="`/invoices/${invoice.id}`" class="mt-2 inline-block text-indigo-600 underline">
+                      Переглянути →
+                    </NuxtLink>
+                  </td>
+                </tr>
+              </template>
             </template>
           </tbody>
         </table>
