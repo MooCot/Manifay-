@@ -47,10 +47,10 @@ function onRowActivate(invoice: Invoice) {
       <h1 class="text-xl font-semibold">Інвойси</h1>
       <button
         type="button"
-        class="inline-flex items-center gap-1 rounded border px-2 py-1 text-sm sm:hidden"
+        aria-label="Сортувати за терміном оплати"
+        class="rounded border p-2 sm:hidden"
         @click="toggleSort('due_date')"
       >
-        Термін оплати
         <SortIcon :active="sort === 'due_date'" :direction="direction" />
       </button>
     </div>
