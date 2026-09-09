@@ -1,1 +1,21 @@
 @import "tailwindcss";
+
+/* тонкий скролбар для internal-scroll області таблиці — заміна товстого
+   системного, щоб bounded-height контейнер не виглядав "коробкою" */
+.thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
+}
+
+.thin-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 9999px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
