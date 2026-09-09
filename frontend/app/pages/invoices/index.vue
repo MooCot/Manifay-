@@ -12,9 +12,20 @@ const page = computed({
 const sort = computed(() => (typeof route.query.sort === 'string' ? route.query.sort : 'created_at'))
 const direction = computed<'asc' | 'desc'>(() => (route.query.direction === 'asc' ? 'asc' : 'desc'))
 
+function setSort(column: string, dir: 'asc' | 'desc') {
+  router.push({ query: { ...route.query, sort: column, direction: dir, page: '1' } })
+}
+
 function toggleSort(column: string) {
-  const nextDirection = sort.value === column && direction.value === 'desc' ? 'asc' : 'desc'
-  router.push({ query: { ...route.query, sort: column, direction: nextDirection, page: '1' } })
+  setSort(column, sort.value === column && direction.value === 'desc' ? 'asc' : 'desc')
+}
+
+// на мобільному колонка "Термін оплати" (а з нею й клікабельний заголовок)
+// прихована sm:table-cell — сортування виносимо в окремий, завжди видимий
+// select над таблицею, незалежний від того, які колонки зараз показані
+function onMobileSortChange(event: Event) {
+  const [column, dir] = (event.target as HTMLSelectElement).value.split('-') as [string, 'asc' | 'desc']
+  setSort(column, dir)
 }
 
 const { data, status, error, refresh } = await useInvoices(page, sort, direction)
@@ -44,7 +55,22 @@ function onRowActivate(invoice: Invoice) {
 
 <template>
   <div class="mx-auto flex h-dvh max-w-5xl flex-col p-4 sm:p-6">
-    <h1 class="mb-4 shrink-0 text-xl font-semibold">Інвойси</h1>
+    <div class="mb-4 flex shrink-0 items-center justify-between gap-2">
+      <h1 class="text-xl font-semibold">Інвойси</h1>
+      <label>
+        <span class="sr-only">Сортування</span>
+        <select
+          class="rounded border px-2 py-1 text-sm sm:hidden"
+          :value="`${sort}-${direction}`"
+          @change="onMobileSortChange($event)"
+        >
+          <option value="created_at-desc">Спочатку нові</option>
+          <option value="created_at-asc">Спочатку старі</option>
+          <option value="due_date-asc">Термін оплати: спочатку раніші</option>
+          <option value="due_date-desc">Термін оплати: спочатку пізніші</option>
+        </select>
+      </label>
+    </div>
 
     <div v-if="error" class="rounded border border-red-200 bg-red-50 p-4 text-red-700">
       Не вдалося завантажити список інвойсів.
