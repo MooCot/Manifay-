@@ -19,11 +19,11 @@ withDefaults(defineProps<{ active: boolean, direction: 'asc' | 'desc', size?: 's
     stroke-linejoin="round"
     aria-hidden="true"
   >
-    <path v-if="active && direction === 'asc'" d="M8 18l4-12 4 12" />
-    <path v-else-if="active && direction === 'desc'" d="M8 6l4 12 4-12" />
+    <path v-if="active && direction === 'asc'" d="M6 17l6-10 6 10" />
+    <path v-else-if="active && direction === 'desc'" d="M6 7l6 10 6-10" />
     <template v-else>
-      <path d="M8 10l4-4 4 4" />
-      <path d="M16 14l-4 4-4-4" />
+      <path d="M6 10l6-4 6 4" />
+      <path d="M6 14l6 4 6-4" />
     </template>
   </svg>
 </template>

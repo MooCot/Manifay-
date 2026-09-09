@@ -43,7 +43,7 @@ function onRowActivate(invoice: Invoice) {
 
 <template>
   <div class="mx-auto flex h-dvh max-w-5xl flex-col p-4 sm:p-6">
-    <div class="mb-4 flex shrink-0 items-center gap-2">
+    <div class="mb-4 flex shrink-0 items-center gap-0.5">
       <h1 class="text-xl font-semibold">Інвойси</h1>
       <button
         type="button"
