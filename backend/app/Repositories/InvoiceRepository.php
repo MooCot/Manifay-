@@ -9,7 +9,10 @@ class InvoiceRepository
 {
     public function paginate(int $perPage = 15): LengthAwarePaginator
     {
-        return Invoice::query()->orderByDesc('created_at')->paginate($perPage);
+        // id як tiebreak: без нього рядки з однаковим created_at (наприклад,
+        // масово насіджені за одну секунду) повертаються в недетермінованому
+        // порядку — теоретично можуть "зникнути"/здублюватись між сторінками
+        return Invoice::query()->orderByDesc('created_at')->orderByDesc('id')->paginate($perPage);
     }
 
     public function findOrFail(int $id): Invoice
