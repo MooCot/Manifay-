@@ -8,7 +8,7 @@ withDefaults(defineProps<{ active: boolean, direction: 'asc' | 'desc', size?: 's
   <svg
     :class="[
       size === 'lg' ? 'h-5 w-5' : 'h-3.5 w-3.5',
-      'shrink-0',
+      'relative top-[3px] shrink-0',
       active ? 'text-current' : 'text-gray-400',
     ]"
     viewBox="0 0 24 24"
