@@ -13,7 +13,20 @@ function onSaved() {
   <div class="mx-auto max-w-2xl p-6">
     <NuxtLink to="/invoices" class="mb-4 inline-block text-sm text-indigo-600">← До списку</NuxtLink>
 
-    <div v-if="status === 'pending'" class="text-gray-500">Завантаження…</div>
+    <div v-if="status === 'pending'" class="animate-pulse space-y-6">
+      <div class="flex items-center justify-between">
+        <div class="h-6 w-32 rounded bg-gray-200" />
+        <div class="h-5 w-20 rounded-full bg-gray-200" />
+      </div>
+      <dl class="grid grid-cols-2 gap-x-4 gap-y-3">
+        <div v-for="i in 12" :key="i" class="h-4 rounded bg-gray-200" />
+      </dl>
+      <div class="space-y-3">
+        <div class="h-9 rounded bg-gray-200" />
+        <div class="h-9 rounded bg-gray-200" />
+        <div class="h-9 w-24 rounded bg-gray-200" />
+      </div>
+    </div>
 
     <div v-else-if="error" class="rounded border border-red-200 bg-red-50 p-4 text-red-700">
       <template v-if="error.statusCode === 404">Інвойс не знайдено.</template>

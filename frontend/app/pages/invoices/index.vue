@@ -8,20 +8,21 @@ const page = computed({
 })
 
 const { data, status, error, refresh } = await useInvoices(page)
+
+const isLoading = computed(() => status.value === 'pending')
+const isEmpty = computed(() => !isLoading.value && !error.value && !data.value?.data?.length)
 </script>
 
 <template>
   <div class="mx-auto flex h-dvh max-w-5xl flex-col p-6">
     <h1 class="mb-4 shrink-0 text-xl font-semibold">Інвойси</h1>
 
-    <div v-if="status === 'pending'" class="text-gray-500">Завантаження…</div>
-
-    <div v-else-if="error" class="rounded border border-red-200 bg-red-50 p-4 text-red-700">
+    <div v-if="error" class="rounded border border-red-200 bg-red-50 p-4 text-red-700">
       Не вдалося завантажити список інвойсів.
       <button class="ml-2 underline" @click="refresh()">Спробувати ще раз</button>
     </div>
 
-    <div v-else-if="!data?.data?.length" class="text-gray-500">Інвойсів ще немає.</div>
+    <div v-else-if="isEmpty" class="text-gray-500">Інвойсів ще немає.</div>
 
     <template v-else>
       <!-- min-h-0 обов'язковий для flex-дитини з overflow — інакше вона не
@@ -38,23 +39,37 @@ const { data, status, error, refresh } = await useInvoices(page)
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="invoice in data.data"
-              :key="invoice.id"
-              class="cursor-pointer border-b hover:bg-gray-50"
-              @click="navigateTo(`/invoices/${invoice.id}`)"
-            >
-              <td class="max-w-[200px] truncate py-2" :title="invoice.number">{{ invoice.number }}</td>
-              <td class="max-w-[220px] truncate py-2" :title="invoice.supplier_name">{{ invoice.supplier_name }}</td>
-              <td class="py-2">{{ invoice.gross_amount }} {{ invoice.currency }}</td>
-              <td class="py-2"><InvoiceStatusBadge :status="invoice.status" /></td>
-              <td class="py-2">{{ invoice.due_date }}</td>
-            </tr>
+            <template v-if="isLoading">
+              <tr v-for="i in 8" :key="i" class="border-b">
+                <td class="py-2"><div class="h-4 w-24 animate-pulse rounded bg-gray-200" /></td>
+                <td class="py-2"><div class="h-4 w-32 animate-pulse rounded bg-gray-200" /></td>
+                <td class="py-2"><div class="h-4 w-20 animate-pulse rounded bg-gray-200" /></td>
+                <td class="py-2"><div class="h-5 w-16 animate-pulse rounded-full bg-gray-200" /></td>
+                <td class="py-2"><div class="h-4 w-20 animate-pulse rounded bg-gray-200" /></td>
+              </tr>
+            </template>
+            <template v-else>
+              <tr
+                v-for="invoice in data?.data"
+                :key="invoice.id"
+                class="cursor-pointer border-b hover:bg-gray-50"
+                @click="navigateTo(`/invoices/${invoice.id}`)"
+              >
+                <td class="max-w-[200px] truncate py-2" :title="invoice.number">{{ invoice.number }}</td>
+                <td class="max-w-[220px] truncate py-2" :title="invoice.supplier_name">{{ invoice.supplier_name }}</td>
+                <td class="py-2">{{ invoice.gross_amount }} {{ invoice.currency }}</td>
+                <td class="py-2"><InvoiceStatusBadge :status="invoice.status" /></td>
+                <td class="py-2">{{ invoice.due_date }}</td>
+              </tr>
+            </template>
           </tbody>
         </table>
       </div>
 
-      <div v-if="data.meta.last_page > 1" class="mt-4 flex shrink-0 items-center justify-between text-sm">
+      <div
+        v-if="!isLoading && data && data.meta.last_page > 1"
+        class="mt-4 flex shrink-0 items-center justify-between text-sm"
+      >
         <button
           class="rounded border px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
           :disabled="data.meta.current_page <= 1"
