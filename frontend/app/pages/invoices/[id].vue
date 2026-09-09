@@ -2,9 +2,18 @@
 import type { Invoice } from '~/types/invoice'
 
 const route = useRoute()
+const router = useRouter()
 const id = route.params.id as string
 
 const { data, status, error, refresh } = useInvoice(id)
+
+function goToList() {
+  if (window.history.state?.back) {
+    router.back()
+  } else {
+    router.push('/invoices')
+  }
+}
 
 const justSaved = ref(false)
 let justSavedTimeout: ReturnType<typeof setTimeout> | undefined
@@ -27,7 +36,7 @@ onUnmounted(() => {
 
 <template>
   <div class="mx-auto max-w-4xl p-4 sm:p-6">
-    <NuxtLink to="/invoices" class="mb-4 inline-block text-sm text-indigo-600">← До списку</NuxtLink>
+    <button type="button" class="mb-4 inline-block text-sm text-indigo-600" @click="goToList">← До списку</button>
 
     <div v-if="status === 'pending'" class="animate-pulse space-y-4">
       <div class="flex items-center justify-between">
