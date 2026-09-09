@@ -38,13 +38,14 @@ const onSubmit = handleSubmit(async (formValues) => {
     const updated = await updateInvoice(props.invoice.id, {
       net_amount: formValues.net_amount,
       vat_amount: formValues.vat_amount,
-      due_date: formValues.due_date as unknown as string,
+      due_date: formValues.due_date,
     })
     emit('saved', updated.data)
-  } catch (e: any) {
-    if (e?.status === 422) {
+  } catch (e: unknown) {
+    const status = e && typeof e === 'object' && 'status' in e ? (e as { status?: number }).status : undefined
+    if (status === 422) {
       submitError.value = 'Дані не пройшли валідацію на сервері.'
-    } else if (e?.status === 409) {
+    } else if (status === 409) {
       submitError.value = 'Статус інвойсу змінився — оновіть сторінку.'
     } else {
       submitError.value = 'Не вдалося зберегти зміни. Перевірте з’єднання і спробуйте ще раз.'

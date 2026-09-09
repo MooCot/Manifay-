@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class InvoiceNotEditableException extends \DomainException
-{
-}
+class InvoiceNotEditableException extends \DomainException {}

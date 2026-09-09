@@ -28,7 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // і віддаємо фронту чистий, людино-зрозумілий 400 замість стектрейсу.
         // Не займає те, що Laravel вже коректно мапить самостійно — 422
         // (ValidationException), 404 (ModelNotFoundException/HttpExceptionInterface).
-        $exceptions->render(function (\Throwable $e, Request $request) {
+        $exceptions->render(function (Throwable $e, Request $request) {
             if (! $request->is('api/*')) {
                 return null;
             }

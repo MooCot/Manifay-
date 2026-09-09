@@ -2,4 +2,6 @@
 await navigateTo('/invoices')
 </script>
 
-<template />
+<template>
+  <div />
+</template>
