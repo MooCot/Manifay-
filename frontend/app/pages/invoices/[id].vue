@@ -20,9 +20,12 @@ function onSaved() {
       </div>
       <div class="grid gap-6 md:grid-cols-2">
         <div class="rounded-lg border border-gray-200 p-4">
-          <div class="mb-3 h-4 w-16 rounded bg-gray-200" />
-          <div class="mx-auto w-fit space-y-3">
-            <div v-for="i in 6" :key="i" class="h-4 w-40 rounded bg-gray-200" />
+          <div class="mb-4 h-4 w-16 rounded bg-gray-200" />
+          <div class="space-y-4">
+            <div v-for="i in 4" :key="i" class="space-y-1">
+              <div class="h-3 w-20 rounded bg-gray-200" />
+              <div class="h-4 w-32 rounded bg-gray-200" />
+            </div>
           </div>
         </div>
         <div class="rounded-lg border border-gray-200 p-4">
@@ -54,42 +57,33 @@ function onSaved() {
            просторі; md:grid-cols-2 — поруч на десктопі, менше вертикального
            контенту -->
       <div class="grid gap-6 md:grid-cols-2">
-        <div class="flex flex-col rounded-lg border border-gray-200 p-4">
-          <h2 class="mb-3 text-sm font-semibold text-gray-700">Деталі</h2>
-          <!-- справжня <table>, не grid — колонки природно підлаштовуються під
-               контент (короткі дати vs довгі лейбли), а не діляться порівну
-               50/50, звідки й була асиметрія. Картка вища за таблицю (тягнеться
-               під висоту форми-сусіда в grid), тому центруємо таблицю у
-               вільному просторі під заголовком, а не лишаємо її зверху -->
-          <div class="flex flex-1 items-center justify-center">
-            <table class="text-sm">
-            <tbody>
-              <tr>
-                <td class="whitespace-nowrap py-1 pr-4 text-gray-500">Постачальник</td>
-                <td class="py-1">{{ data.data.supplier_name }}</td>
-              </tr>
-              <tr>
-                <td class="whitespace-nowrap py-1 pr-4 text-gray-500">ІПН постачальника</td>
-                <td class="py-1">{{ data.data.supplier_tax_id }}</td>
-              </tr>
-              <tr>
-                <td class="whitespace-nowrap py-1 pr-4 text-gray-500">Дата видачі</td>
-                <td class="py-1">{{ data.data.issue_date }}</td>
-              </tr>
-              <tr>
-                <td class="whitespace-nowrap py-1 pr-4 text-gray-500">Термін оплати</td>
-                <td class="py-1">{{ data.data.due_date }}</td>
-              </tr>
-              <tr>
-                <td class="whitespace-nowrap py-1 pr-4 text-gray-500">Сума брутто</td>
-                <td class="py-1">{{ data.data.gross_amount }} {{ data.data.currency }}</td>
-              </tr>
-              <tr>
-                <td class="whitespace-nowrap py-1 pr-4 text-gray-500">Востаннє оновлено</td>
-                <td class="py-1">{{ new Date(data.data.updated_at).toLocaleString('uk-UA') }}</td>
-              </tr>
-            </tbody>
-            </table>
+        <div class="rounded-lg border border-gray-200 p-4">
+          <h2 class="mb-4 text-sm font-semibold text-gray-700">Деталі</h2>
+          <!-- групування замість плаского списку/таблиці — більше візуальної
+               "маси" (заголовки секцій + відступи), краще балансує з формою
+               по висоті, без штучного центрування -->
+          <div class="space-y-4 text-sm">
+            <div>
+              <h3 class="mb-1 text-xs font-medium tracking-wide text-gray-400 uppercase">Постачальник</h3>
+              <p>{{ data.data.supplier_name }}</p>
+              <p class="text-gray-500">ІПН {{ data.data.supplier_tax_id }}</p>
+            </div>
+
+            <div>
+              <h3 class="mb-1 text-xs font-medium tracking-wide text-gray-400 uppercase">Терміни</h3>
+              <p>Видано: {{ data.data.issue_date }}</p>
+              <p>Оплата до: {{ data.data.due_date }}</p>
+            </div>
+
+            <div>
+              <h3 class="mb-1 text-xs font-medium tracking-wide text-gray-400 uppercase">Сума</h3>
+              <p class="text-base font-medium">{{ data.data.gross_amount }} {{ data.data.currency }}</p>
+            </div>
+
+            <div>
+              <h3 class="mb-1 text-xs font-medium tracking-wide text-gray-400 uppercase">Оновлено</h3>
+              <p class="text-gray-500">{{ new Date(data.data.updated_at).toLocaleString('uk-UA') }}</p>
+            </div>
           </div>
         </div>
 
