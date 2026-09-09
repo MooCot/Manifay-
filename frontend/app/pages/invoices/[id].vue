@@ -21,9 +21,9 @@ function onSaved() {
       <div class="grid gap-6 md:grid-cols-2">
         <div class="rounded-lg border border-gray-200 p-4">
           <div class="mb-3 h-4 w-16 rounded bg-gray-200" />
-          <dl class="grid grid-cols-2 gap-x-4 gap-y-3">
-            <div v-for="i in 12" :key="i" class="h-4 rounded bg-gray-200" />
-          </dl>
+          <div class="mx-auto w-fit space-y-3">
+            <div v-for="i in 6" :key="i" class="h-4 w-40 rounded bg-gray-200" />
+          </div>
         </div>
         <div class="rounded-lg border border-gray-200 p-4">
           <div class="mb-3 h-4 w-24 rounded bg-gray-200" />
@@ -56,20 +56,37 @@ function onSaved() {
       <div class="grid gap-6 md:grid-cols-2">
         <div class="rounded-lg border border-gray-200 p-4">
           <h2 class="mb-3 text-sm font-semibold text-gray-700">Деталі</h2>
-          <dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-            <dt class="text-gray-500">Постачальник</dt>
-            <dd>{{ data.data.supplier_name }}</dd>
-            <dt class="text-gray-500">ІПН постачальника</dt>
-            <dd>{{ data.data.supplier_tax_id }}</dd>
-            <dt class="text-gray-500">Дата видачі</dt>
-            <dd>{{ data.data.issue_date }}</dd>
-            <dt class="text-gray-500">Термін оплати</dt>
-            <dd>{{ data.data.due_date }}</dd>
-            <dt class="text-gray-500">Сума брутто</dt>
-            <dd>{{ data.data.gross_amount }} {{ data.data.currency }}</dd>
-            <dt class="text-gray-500">Востаннє оновлено</dt>
-            <dd>{{ new Date(data.data.updated_at).toLocaleString('uk-UA') }}</dd>
-          </dl>
+          <!-- справжня <table>, не grid — колонки природно підлаштовуються під
+               контент (короткі дати vs довгі лейбли), а не діляться порівну
+               50/50, звідки й була асиметрія; mx-auto центрує компактну таблицю -->
+          <table class="mx-auto text-sm">
+            <tbody>
+              <tr>
+                <td class="whitespace-nowrap py-1 pr-4 text-gray-500">Постачальник</td>
+                <td class="py-1">{{ data.data.supplier_name }}</td>
+              </tr>
+              <tr>
+                <td class="whitespace-nowrap py-1 pr-4 text-gray-500">ІПН постачальника</td>
+                <td class="py-1">{{ data.data.supplier_tax_id }}</td>
+              </tr>
+              <tr>
+                <td class="whitespace-nowrap py-1 pr-4 text-gray-500">Дата видачі</td>
+                <td class="py-1">{{ data.data.issue_date }}</td>
+              </tr>
+              <tr>
+                <td class="whitespace-nowrap py-1 pr-4 text-gray-500">Термін оплати</td>
+                <td class="py-1">{{ data.data.due_date }}</td>
+              </tr>
+              <tr>
+                <td class="whitespace-nowrap py-1 pr-4 text-gray-500">Сума брутто</td>
+                <td class="py-1">{{ data.data.gross_amount }} {{ data.data.currency }}</td>
+              </tr>
+              <tr>
+                <td class="whitespace-nowrap py-1 pr-4 text-gray-500">Востаннє оновлено</td>
+                <td class="py-1">{{ new Date(data.data.updated_at).toLocaleString('uk-UA') }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <div class="rounded-lg border border-gray-200 p-4">
