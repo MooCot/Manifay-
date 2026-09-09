@@ -100,7 +100,7 @@ function onSaved(updatedInvoice: Invoice) {
 
         <div class="rounded-lg border border-gray-200 p-4">
           <h2 class="mb-3 text-sm font-semibold text-gray-700">Редагування</h2>
-          <InvoiceEditForm :invoice="data.data" @saved="onSaved" />
+          <InvoiceEditForm :invoice="data.data" :just-saved="justSaved" @saved="onSaved" />
         </div>
       </div>
     </div>

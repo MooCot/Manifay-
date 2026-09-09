@@ -4,7 +4,7 @@ import { useForm } from 'vee-validate'
 import { createInvoiceEditSchema } from '~/schemas/invoice.schema'
 import type { Invoice } from '~/types/invoice'
 
-const props = defineProps<{ invoice: Invoice }>()
+const props = defineProps<{ invoice: Invoice, justSaved?: boolean }>()
 const emit = defineEmits<{ saved: [Invoice] }>()
 
 const editable = computed(() => props.invoice.status === 'pending')
@@ -120,7 +120,7 @@ const onSubmit = handleSubmit(async (formValues) => {
     <button
       v-if="editable"
       type="submit"
-      :disabled="isSubmitting"
+      :disabled="isSubmitting || justSaved"
       class="inline-flex items-center gap-2 rounded bg-indigo-600 px-4 py-2 text-white disabled:opacity-50"
     >
       <svg
