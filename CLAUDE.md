@@ -149,7 +149,7 @@ GitHub/GitLab репозиторій, README.md з відповідями, ін�
 
 6. **CORS** — увімкнено напряму на бекенді (`config/cors.php`, `allowed_origins` = `FRONTEND_URL` з `.env`), без Nuxt server-проксі. Простіше для двоконтейнерного docker-compose (backend:8000 + frontend:3000), не додає зайвого проміжного шару заради задачі, де його немає що ховати.
 
-## Статичний аналіз (простіше, ніж у wtgspain)
+## Статичний аналіз (простіше, ніж у попередньому проєкті)
 
 Без GrumPHP-оркестрації, без Deptrac (немає Ports/шарів — нічим перевіряти межі). Git hooks — прості трековані shell-скрипти в `.githooks/` (не Husky — зайва npm-залежність заради того, що вміє сам git), без окремого фреймворка-оркестратора.
 
@@ -185,23 +185,23 @@ GitHub/GitLab репозиторій, README.md з відповідями, ін�
 ```
 app/
   pages/
+    index.vue             # редірект на /invoices
     invoices/
-      index.vue        # список
-      [id].vue          # деталі + вбудована edit-форма
+      index.vue           # список
+      [id].vue            # деталі + вбудована edit-форма
   components/
     InvoiceStatusBadge.vue
     InvoiceEditForm.vue
-    InvoiceTable.vue
   composables/
-    useInvoices.ts      # useFetch список
-    useInvoice.ts        # useFetch один інвойс + update
+    useInvoices.ts        # useFetch список
+    useInvoice.ts         # useFetch один інвойс + update
   schemas/
-    invoice.schema.ts    # zod-схема для edit-форми
+    invoice.schema.ts     # zod-схема для edit-форми
   types/
-    invoice.ts           # TS-тип Invoice
+    invoice.ts            # TS-тип Invoice
+  utils/
+    formatDate.ts         # форматування дат для read-only відображення
   app.vue
-server/                   # опційно, якщо проксуємо CORS
-  api/
 nuxt.config.ts
 ```
 
@@ -241,7 +241,7 @@ Nuxt 4 змінив дефолтну структуру — `pages/`/`components
 
 ## Правила комітів
 
-**Conventional Commits** (`type(scope): опис`) — перенесено з wtgspain для узгодженості стилю.
+**Conventional Commits** (`type(scope): опис`) — перенесено з попереднього проєкту для узгодженості стилю.
 
 Формат: `type(scope): опис`
 - `type` — один з: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `style`, `perf`
@@ -256,7 +256,7 @@ refactor(backend): UseCase без Ports — тонкий контролер
 docs(readme): відповіді на 4 питання ТЗ
 ```
 
-**На відміну від wtgspain — тут НЕ enforced автоматично** (немає GrumPHP/pre-commit хука в цьому проєкті; дотримуємось формату вручну). Якщо додати автоматизацію — той самий regex, що й у wtgspain: `/^(feat|fix|refactor|docs|test|chore|style|perf)\(.+\): .{1,72}$/`.
+**Формат повідомлення НЕ enforced автоматично** (`.githooks/pre-commit` перевіряє лише код — Pint+ESLint, — не текст коміту; дотримуємось формату вручну). Якщо додати перевірку — той самий regex, що й у попередньому проєкті: `/^(feat|fix|refactor|docs|test|chore|style|perf)\(.+\): .{1,72}$/`.
 
 ## Процес
 
