@@ -48,7 +48,7 @@ function onRowActivate(invoice: Invoice) {
       <button
         type="button"
         aria-label="Сортувати за терміном оплати"
-        class="flex items-center rounded p-2 text-xl sm:hidden"
+        class="flex items-center text-xl sm:hidden"
         @click="toggleSort('due_date')"
       >
         <SortIcon :active="sort === 'due_date'" :direction="direction" />

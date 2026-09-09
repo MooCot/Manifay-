@@ -14,8 +14,8 @@ defineProps<{ active: boolean, direction: 'asc' | 'desc' }>()
     stroke-linejoin="round"
     aria-hidden="true"
   >
-    <path v-if="active && direction === 'asc'" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
-    <path v-else-if="active && direction === 'desc'" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+    <path v-if="active && direction === 'asc'" d="M8 18l4-12 4 12" />
+    <path v-else-if="active && direction === 'desc'" d="M8 6l4 12 4-12" />
     <template v-else>
       <path d="M8 11l4-4 4 4" />
       <path d="M16 13l-4 4-4-4" />
