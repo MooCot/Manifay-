@@ -1,11 +1,17 @@
 <script setup lang="ts">
+import type { Invoice } from '~/types/invoice'
+
 const route = useRoute()
 const id = route.params.id as string
 
 const { data, status, error, refresh } = useInvoice(id)
 
-function onSaved() {
-  refresh()
+// напряму з відповіді PUT, не рефетч — інакше status на мить стає 'pending',
+// весь блок (деталі+форма) замінюється skeleton'ом, форма розмонтовується
+function onSaved(updatedInvoice: Invoice) {
+  if (data.value) {
+    data.value.data = updatedInvoice
+  }
 }
 </script>
 
