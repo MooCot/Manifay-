@@ -51,7 +51,7 @@ function onRowActivate(invoice: Invoice) {
         @click="toggleSort('due_date')"
       >
         Термін оплати
-        <span v-if="sort === 'due_date'" aria-hidden="true">{{ direction === 'asc' ? '▲' : '▼' }}</span>
+        <span aria-hidden="true">{{ sort === 'due_date' ? (direction === 'asc' ? '▲' : '▼') : '⇅' }}</span>
       </button>
     </div>
 
@@ -81,7 +81,7 @@ function onRowActivate(invoice: Invoice) {
                   @click="toggleSort('due_date')"
                 >
                   Термін оплати
-                  <span v-if="sort === 'due_date'" aria-hidden="true">{{ direction === 'asc' ? '▲' : '▼' }}</span>
+                  <span aria-hidden="true">{{ sort === 'due_date' ? (direction === 'asc' ? '▲' : '▼') : '⇅' }}</span>
                 </button>
               </th>
             </tr>
