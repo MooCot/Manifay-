@@ -19,6 +19,7 @@ docker compose up
 
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:8000/api
+- OpenAPI-спека (`POST /api/invoices`): [`backend/storage/api-docs/openapi.json`](backend/storage/api-docs/openapi.json)
 - При першому старті `backend`-сервіс сам виконує `composer install`, міграції та сідинг (демо-дані, включно з approved/rejected інвойсами).
 
 ## Якість коду
