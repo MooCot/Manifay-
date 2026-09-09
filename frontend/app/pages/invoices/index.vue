@@ -84,7 +84,10 @@ function onRowActivate(invoice: Invoice) {
               <th class="hidden py-2 sm:table-cell">Постачальник</th>
               <th class="hidden py-2 sm:table-cell">Сума (брутто)</th>
               <th class="py-2">Статус</th>
-              <th class="hidden py-2 sm:table-cell">
+              <th
+                class="hidden py-2 sm:table-cell"
+                :aria-sort="sort === 'due_date' ? (direction === 'asc' ? 'ascending' : 'descending') : 'none'"
+              >
                 <button
                   type="button"
                   class="inline-flex items-center gap-1 hover:text-gray-700"
@@ -110,7 +113,6 @@ function onRowActivate(invoice: Invoice) {
               <template v-for="invoice in data?.data" :key="invoice.id">
                 <tr
                   tabindex="0"
-                  role="button"
                   :aria-expanded="expandedId === invoice.id"
                   :aria-label="`Інвойс ${invoice.number}`"
                   class="cursor-pointer border-b hover:bg-gray-50 focus:bg-gray-50 focus:outline-2 focus:outline-indigo-500 focus:-outline-offset-2"
