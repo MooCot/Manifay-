@@ -25,11 +25,11 @@ const isEmpty = computed(() => !isLoading.value && !error.value && !data.value?.
     <div v-else-if="isEmpty" class="text-gray-500">Інвойсів ще немає.</div>
 
     <template v-else>
-      <!-- min-h-0 обов'язковий для flex-дитини з overflow — інакше вона не
-           стискається і скрол не спрацьовує (класична flexbox-пастка).
-           overflow-x-auto + min-w на table — на вузьких екранах таблиця
-           скролиться горизонтально замість того, щоб стискатись до нечитабельного -->
-      <div class="thin-scrollbar min-h-0 flex-1 overflow-auto">
+      <!-- min-h-0 + min-w-0 обов'язкові для flex-дитини з overflow — інакше
+           вона не стискається нижче min-content розміру вмісту (тут — 640px
+           таблиці) і замість внутрішнього скролу розтягує всю сторінку
+           (класична flexbox-пастка, та сама, що з min-h-0, тільки по X) -->
+      <div class="thin-scrollbar min-h-0 min-w-0 flex-1 overflow-auto">
         <table class="w-full min-w-[640px] border-collapse text-left text-sm">
           <thead class="sticky top-0 bg-white">
             <tr class="border-b text-gray-500">
