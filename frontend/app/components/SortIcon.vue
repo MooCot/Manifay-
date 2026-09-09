@@ -22,8 +22,8 @@ withDefaults(defineProps<{ active: boolean, direction: 'asc' | 'desc', size?: 's
     <path v-if="active && direction === 'asc'" d="M6 17l6-10 6 10" />
     <path v-else-if="active && direction === 'desc'" d="M6 7l6 10 6-10" />
     <template v-else>
-      <path d="M6 10l6-4 6 4" />
-      <path d="M6 14l6 4 6-4" />
+      <path d="M9 8l3-4 3 4" />
+      <path d="M9 16l3 4 3-4" />
     </template>
   </svg>
 </template>
