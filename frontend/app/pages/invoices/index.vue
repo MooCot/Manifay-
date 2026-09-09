@@ -128,7 +128,7 @@ function onRowActivate(invoice: Invoice) {
                   </td>
                   <td class="hidden py-2 sm:table-cell">{{ invoice.gross_amount }} {{ invoice.currency }}</td>
                   <td class="py-2"><InvoiceStatusBadge :status="invoice.status" /></td>
-                  <td class="hidden py-2 sm:table-cell">{{ invoice.due_date }}</td>
+                  <td class="hidden py-2 sm:table-cell">{{ formatDate(invoice.due_date) }}</td>
                 </tr>
                 <tr v-if="expandedId === invoice.id" class="border-b bg-gray-50 sm:hidden">
                   <td colspan="5" class="px-2 py-3 text-sm">
@@ -143,7 +143,7 @@ function onRowActivate(invoice: Invoice) {
                       </div>
                       <div class="flex justify-between">
                         <dt class="text-gray-500">Термін оплати</dt>
-                        <dd>{{ invoice.due_date }}</dd>
+                        <dd>{{ formatDate(invoice.due_date) }}</dd>
                       </div>
                     </dl>
                     <NuxtLink :to="`/invoices/${invoice.id}`" class="mt-2 inline-block text-indigo-600 underline">

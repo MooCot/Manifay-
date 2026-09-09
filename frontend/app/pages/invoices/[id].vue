@@ -71,8 +71,8 @@ function onSaved() {
 
             <div>
               <h3 class="mb-1 text-xs font-medium tracking-wide text-gray-400 uppercase">Терміни</h3>
-              <p>Видано: {{ data.data.issue_date }}</p>
-              <p>Оплата до: {{ data.data.due_date }}</p>
+              <p>Видано: {{ formatDate(data.data.issue_date) }}</p>
+              <p>Оплата до: {{ formatDate(data.data.due_date) }}</p>
             </div>
 
             <div>
