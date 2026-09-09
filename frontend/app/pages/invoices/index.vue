@@ -51,7 +51,7 @@ function onRowActivate(invoice: Invoice) {
         @click="toggleSort('due_date')"
       >
         Термін оплати
-        <span aria-hidden="true">{{ sort === 'due_date' ? (direction === 'asc' ? '▲' : '▼') : '⇅' }}</span>
+        <SortIcon :active="sort === 'due_date'" :direction="direction" />
       </button>
     </div>
 
@@ -81,7 +81,7 @@ function onRowActivate(invoice: Invoice) {
                   @click="toggleSort('due_date')"
                 >
                   Термін оплати
-                  <span aria-hidden="true">{{ sort === 'due_date' ? (direction === 'asc' ? '▲' : '▼') : '⇅' }}</span>
+                  <SortIcon :active="sort === 'due_date'" :direction="direction" />
                 </button>
               </th>
             </tr>
