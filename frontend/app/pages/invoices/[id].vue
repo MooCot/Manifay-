@@ -6,10 +6,18 @@ const id = route.params.id as string
 
 const { data, status, error, refresh } = useInvoice(id)
 
+const justSaved = ref(false)
+let justSavedTimeout: ReturnType<typeof setTimeout> | undefined
+
 function onSaved(updatedInvoice: Invoice) {
   if (data.value) {
     data.value.data = updatedInvoice
   }
+  justSaved.value = true
+  clearTimeout(justSavedTimeout)
+  justSavedTimeout = setTimeout(() => {
+    justSaved.value = false
+  }, 3000)
 }
 </script>
 
@@ -53,7 +61,12 @@ function onSaved(updatedInvoice: Invoice) {
 
     <div v-else-if="data?.data" class="space-y-4">
       <div class="flex flex-wrap items-center justify-between gap-2">
-        <h1 class="text-xl font-semibold break-all">{{ data.data.number }}</h1>
+        <div class="flex flex-wrap items-center gap-2">
+          <h1 class="text-xl font-semibold break-all">{{ data.data.number }}</h1>
+          <Transition name="fade">
+            <span v-if="justSaved" role="status" class="text-sm font-medium text-green-600">✓ Збережено</span>
+          </Transition>
+        </div>
         <InvoiceStatusBadge :status="data.data.status" />
       </div>
 
@@ -93,3 +106,14 @@ function onSaved(updatedInvoice: Invoice) {
     </div>
   </div>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

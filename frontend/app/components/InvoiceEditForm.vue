@@ -7,8 +7,6 @@ import type { Invoice } from '~/types/invoice'
 const props = defineProps<{ invoice: Invoice }>()
 const emit = defineEmits<{ saved: [Invoice] }>()
 
-const { showToast } = useToast()
-
 const editable = computed(() => props.invoice.status === 'pending')
 
 const { handleSubmit, errors, defineField, isSubmitting, setErrors } = useForm({
@@ -41,7 +39,6 @@ const onSubmit = handleSubmit(async (formValues) => {
       due_date: formValues.due_date,
     })
     emit('saved', updated.data)
-    showToast('Зміни збережено')
   } catch (e: unknown) {
     const status = e && typeof e === 'object' && 'status' in e ? (e as { status?: number }).status : undefined
     if (status === 422) {
