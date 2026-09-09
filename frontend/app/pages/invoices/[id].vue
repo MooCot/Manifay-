@@ -2,7 +2,7 @@
 const route = useRoute()
 const id = route.params.id as string
 
-const { data, status, error, refresh } = await useInvoice(id)
+const { data, status, error, refresh } = useInvoice(id)
 
 function onSaved() {
   refresh()

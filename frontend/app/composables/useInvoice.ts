@@ -5,6 +5,9 @@ export function useInvoice(id: string | number) {
 
   return useFetch<InvoiceResponse>(`/invoices/${id}`, {
     baseURL: config.public.apiBase,
+    // lazy — та сама причина, що й у useInvoices: без цього skeleton не
+    // встигає показатись при холодному заході на сторінку
+    lazy: true,
   })
 }
 

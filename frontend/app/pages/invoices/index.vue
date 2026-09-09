@@ -21,7 +21,7 @@ function toggleSort(column: string) {
 }
 
 
-const { data, status, error, refresh } = await useInvoices(page, sort, direction)
+const { data, status, error, refresh } = useInvoices(page, sort, direction)
 
 const isLoading = computed(() => status.value === 'pending')
 const isEmpty = computed(() => !isLoading.value && !error.value && !data.value?.data?.length)
