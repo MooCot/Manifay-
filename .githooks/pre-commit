@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+
+echo "→ Pint (backend)"
+docker compose exec -T backend composer lint -- --test
+
+echo "→ ESLint (frontend)"
+docker compose exec -T frontend npm run lint
