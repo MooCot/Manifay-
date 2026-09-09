@@ -1,0 +1,8 @@
+.DS_Store
+Thumbs.db
+/.idea
+/.vscode
+/.fleet
+
+# особисті налаштування Claude Code (не для команди)
+/.claude/settings.local.json
