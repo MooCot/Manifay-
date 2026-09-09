@@ -10,14 +10,20 @@ use App\Repositories\InvoiceRepository;
 use App\UseCases\Invoices\CreateInvoiceUseCase;
 use App\UseCases\Invoices\UpdateInvoiceUseCase;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
 {
     // index/show — чисте читання без бізнес-логіки, тому напряму через
     // Repository, без порожнього UseCase-делегата (див. CLAUDE.md "Архітектура бекенду")
-    public function index(InvoiceRepository $invoices): JsonResponse
+    public function index(Request $request, InvoiceRepository $invoices): JsonResponse
     {
-        return InvoiceResource::collection($invoices->paginate())->response();
+        $paginator = $invoices->paginate(
+            sortBy: (string) $request->query('sort', 'created_at'),
+            sortDirection: (string) $request->query('direction', 'desc'),
+        );
+
+        return InvoiceResource::collection($paginator)->response();
     }
 
     public function show(Invoice $invoice): JsonResponse

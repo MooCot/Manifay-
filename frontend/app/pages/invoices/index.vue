@@ -9,7 +9,15 @@ const page = computed({
   set: (value) => router.push({ query: { ...route.query, page: String(value) } }),
 })
 
-const { data, status, error, refresh } = await useInvoices(page)
+const sort = computed(() => (typeof route.query.sort === 'string' ? route.query.sort : 'created_at'))
+const direction = computed<'asc' | 'desc'>(() => (route.query.direction === 'asc' ? 'asc' : 'desc'))
+
+function toggleSort(column: string) {
+  const nextDirection = sort.value === column && direction.value === 'desc' ? 'asc' : 'desc'
+  router.push({ query: { ...route.query, sort: column, direction: nextDirection, page: '1' } })
+}
+
+const { data, status, error, refresh } = await useInvoices(page, sort, direction)
 
 const isLoading = computed(() => status.value === 'pending')
 const isEmpty = computed(() => !isLoading.value && !error.value && !data.value?.data?.length)
@@ -59,7 +67,16 @@ function onRowActivate(invoice: Invoice) {
               <th class="hidden py-2 sm:table-cell">Постачальник</th>
               <th class="hidden py-2 sm:table-cell">Сума (брутто)</th>
               <th class="py-2">Статус</th>
-              <th class="hidden py-2 sm:table-cell">Термін оплати</th>
+              <th class="hidden py-2 sm:table-cell">
+                <button
+                  type="button"
+                  class="inline-flex items-center gap-1 hover:text-gray-700"
+                  @click="toggleSort('due_date')"
+                >
+                  Термін оплати
+                  <span v-if="sort === 'due_date'" aria-hidden="true">{{ direction === 'asc' ? '▲' : '▼' }}</span>
+                </button>
+              </th>
             </tr>
           </thead>
           <tbody>
