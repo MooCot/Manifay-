@@ -190,7 +190,7 @@ class InvoicesEndpointTest extends TestCase
         $this->assertSame('100.00', $invoice->fresh()->net_amount);
     }
 
-    public function test_unexpected_exception_is_logged_and_returns_clean_bad_request(): void
+    public function test_unexpected_exception_is_logged_and_returns_clean_server_error(): void
     {
         $this->mock(InvoiceRepository::class, function ($mock) {
             $mock->shouldReceive('paginate')->andThrow(new \RuntimeException('unexpected failure'));
@@ -200,8 +200,10 @@ class InvoicesEndpointTest extends TestCase
 
         $response = $this->getJson('/api/invoices');
 
-        $response->assertStatus(400);
+        $response->assertStatus(500);
         $response->assertJson(['message' => 'Сталася непередбачена помилка на сервері. Спробуйте ще раз пізніше.']);
+        $response->assertDontSee('RuntimeException');
+        $response->assertDontSee('unexpected failure');
         Log::shouldHaveReceived('error')->once();
     }
 
