@@ -20,13 +20,6 @@ function toggleSort(column: string) {
   setSort(column, sort.value === column && direction.value === 'desc' ? 'asc' : 'desc')
 }
 
-// на мобільному колонка "Термін оплати" (а з нею й клікабельний заголовок)
-// прихована sm:table-cell — сортування виносимо в окремий, завжди видимий
-// select над таблицею, незалежний від того, які колонки зараз показані
-function onMobileSortChange(event: Event) {
-  const [column, dir] = (event.target as HTMLSelectElement).value.split('-') as [string, 'asc' | 'desc']
-  setSort(column, dir)
-}
 
 const { data, status, error, refresh } = await useInvoices(page, sort, direction)
 
@@ -57,19 +50,17 @@ function onRowActivate(invoice: Invoice) {
   <div class="mx-auto flex h-dvh max-w-5xl flex-col p-4 sm:p-6">
     <div class="mb-4 flex shrink-0 flex-wrap items-center justify-between gap-2">
       <h1 class="text-xl font-semibold">Інвойси</h1>
-      <label>
-        <span class="sr-only">Сортування</span>
-        <select
-          class="rounded border px-2 py-1 text-sm sm:hidden"
-          :value="`${sort}-${direction}`"
-          @change="onMobileSortChange($event)"
-        >
-          <option value="created_at-desc">Спочатку нові</option>
-          <option value="created_at-asc">Спочатку старі</option>
-          <option value="due_date-asc">Термін оплати ↑</option>
-          <option value="due_date-desc">Термін оплати ↓</option>
-        </select>
-      </label>
+      <!-- на мобільному колонка "Термін оплати" (а з нею й клікабельний
+           заголовок) прихована sm:table-cell — той самий toggleSort, окрема
+           кнопка, завжди видима незалежно від того, які колонки показані -->
+      <button
+        type="button"
+        class="inline-flex items-center gap-1 rounded border px-2 py-1 text-sm sm:hidden"
+        @click="toggleSort('due_date')"
+      >
+        Термін оплати
+        <span v-if="sort === 'due_date'" aria-hidden="true">{{ direction === 'asc' ? '▲' : '▼' }}</span>
+      </button>
     </div>
 
     <div v-if="error" class="rounded border border-red-200 bg-red-50 p-4 text-red-700">
