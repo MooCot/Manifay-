@@ -21,8 +21,10 @@ class InvoiceSeeder extends Seeder
             return;
         }
 
-        Invoice::factory()->count(6)->create();
-        Invoice::factory()->count(3)->approved()->create();
-        Invoice::factory()->count(2)->rejected()->create();
+        // 48 інвойсів (per_page=15 → 4 сторінки), щоб було на чому
+        // продемонструвати пагінацію на фронтенді
+        Invoice::factory()->count(30)->create();
+        Invoice::factory()->count(10)->approved()->create();
+        Invoice::factory()->count(8)->rejected()->create();
     }
 }

@@ -1,5 +1,13 @@
 <script setup lang="ts">
-const { data, status, error, refresh } = await useInvoices()
+const route = useRoute()
+const router = useRouter()
+
+const page = computed({
+  get: () => Number(route.query.page) || 1,
+  set: (value) => router.push({ query: { ...route.query, page: String(value) } }),
+})
+
+const { data, status, error, refresh } = await useInvoices(page)
 </script>
 
 <template>
@@ -15,30 +23,52 @@ const { data, status, error, refresh } = await useInvoices()
 
     <div v-else-if="!data?.data?.length" class="text-gray-500">Інвойсів ще немає.</div>
 
-    <table v-else class="w-full border-collapse text-left text-sm">
-      <thead>
-        <tr class="border-b text-gray-500">
-          <th class="py-2">Номер</th>
-          <th class="py-2">Постачальник</th>
-          <th class="py-2">Сума (брутто)</th>
-          <th class="py-2">Статус</th>
-          <th class="py-2">Термін оплати</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="invoice in data.data"
-          :key="invoice.id"
-          class="cursor-pointer border-b hover:bg-gray-50"
-          @click="navigateTo(`/invoices/${invoice.id}`)"
+    <template v-else>
+      <table class="w-full border-collapse text-left text-sm">
+        <thead>
+          <tr class="border-b text-gray-500">
+            <th class="py-2">Номер</th>
+            <th class="py-2">Постачальник</th>
+            <th class="py-2">Сума (брутто)</th>
+            <th class="py-2">Статус</th>
+            <th class="py-2">Термін оплати</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="invoice in data.data"
+            :key="invoice.id"
+            class="cursor-pointer border-b hover:bg-gray-50"
+            @click="navigateTo(`/invoices/${invoice.id}`)"
+          >
+            <td class="max-w-[200px] truncate py-2" :title="invoice.number">{{ invoice.number }}</td>
+            <td class="max-w-[220px] truncate py-2" :title="invoice.supplier_name">{{ invoice.supplier_name }}</td>
+            <td class="py-2">{{ invoice.gross_amount }} {{ invoice.currency }}</td>
+            <td class="py-2"><InvoiceStatusBadge :status="invoice.status" /></td>
+            <td class="py-2">{{ invoice.due_date }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div v-if="data.meta.last_page > 1" class="mt-4 flex items-center justify-between text-sm">
+        <button
+          class="rounded border px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+          :disabled="data.meta.current_page <= 1"
+          @click="page = data.meta.current_page - 1"
         >
-          <td class="max-w-[200px] truncate py-2" :title="invoice.number">{{ invoice.number }}</td>
-          <td class="max-w-[220px] truncate py-2" :title="invoice.supplier_name">{{ invoice.supplier_name }}</td>
-          <td class="py-2">{{ invoice.gross_amount }} {{ invoice.currency }}</td>
-          <td class="py-2"><InvoiceStatusBadge :status="invoice.status" /></td>
-          <td class="py-2">{{ invoice.due_date }}</td>
-        </tr>
-      </tbody>
-    </table>
+          ← Попередня
+        </button>
+        <span class="text-gray-500">
+          Сторінка {{ data.meta.current_page }} з {{ data.meta.last_page }} ({{ data.meta.total }} інвойсів)
+        </span>
+        <button
+          class="rounded border px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+          :disabled="data.meta.current_page >= data.meta.last_page"
+          @click="page = data.meta.current_page + 1"
+        >
+          Наступна →
+        </button>
+      </div>
+    </template>
   </div>
 </template>
