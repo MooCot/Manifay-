@@ -43,15 +43,15 @@ function onRowActivate(invoice: Invoice) {
 
 <template>
   <div class="mx-auto flex h-dvh max-w-5xl flex-col p-4 sm:p-6">
-    <div class="mb-4 flex shrink-0 items-center gap-1">
+    <div class="mb-4 flex shrink-0 items-center gap-2">
       <h1 class="text-xl font-semibold">Інвойси</h1>
       <button
         type="button"
         aria-label="Сортувати за терміном оплати"
-        class="flex items-center text-xl sm:hidden"
+        class="flex items-center sm:hidden"
         @click="toggleSort('due_date')"
       >
-        <SortIcon :active="sort === 'due_date'" :direction="direction" />
+        <SortIcon :active="sort === 'due_date'" :direction="direction" size="lg" />
       </button>
     </div>
 
