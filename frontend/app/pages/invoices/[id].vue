@@ -10,7 +10,7 @@ function onSaved() {
 </script>
 
 <template>
-  <div class="mx-auto max-w-4xl p-6">
+  <div class="mx-auto max-w-4xl p-4 sm:p-6">
     <NuxtLink to="/invoices" class="mb-4 inline-block text-sm text-indigo-600">← До списку</NuxtLink>
 
     <div v-if="status === 'pending'" class="animate-pulse space-y-4">
@@ -48,8 +48,8 @@ function onSaved() {
     </div>
 
     <div v-else-if="data?.data" class="space-y-4">
-      <div class="flex items-center justify-between">
-        <h1 class="text-xl font-semibold">{{ data.data.number }}</h1>
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <h1 class="text-xl font-semibold break-all">{{ data.data.number }}</h1>
         <InvoiceStatusBadge :status="data.data.status" />
       </div>
 

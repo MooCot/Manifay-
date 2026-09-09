@@ -14,7 +14,7 @@ const isEmpty = computed(() => !isLoading.value && !error.value && !data.value?.
 </script>
 
 <template>
-  <div class="mx-auto flex h-dvh max-w-5xl flex-col p-6">
+  <div class="mx-auto flex h-dvh max-w-5xl flex-col p-4 sm:p-6">
     <h1 class="mb-4 shrink-0 text-xl font-semibold">Інвойси</h1>
 
     <div v-if="error" class="rounded border border-red-200 bg-red-50 p-4 text-red-700">
@@ -26,9 +26,11 @@ const isEmpty = computed(() => !isLoading.value && !error.value && !data.value?.
 
     <template v-else>
       <!-- min-h-0 обов'язковий для flex-дитини з overflow — інакше вона не
-           стискається і скрол не спрацьовує (класична flexbox-пастка) -->
-      <div class="thin-scrollbar min-h-0 flex-1 overflow-y-auto">
-        <table class="w-full border-collapse text-left text-sm">
+           стискається і скрол не спрацьовує (класична flexbox-пастка).
+           overflow-x-auto + min-w на table — на вузьких екранах таблиця
+           скролиться горизонтально замість того, щоб стискатись до нечитабельного -->
+      <div class="thin-scrollbar min-h-0 flex-1 overflow-auto">
+        <table class="w-full min-w-[640px] border-collapse text-left text-sm">
           <thead class="sticky top-0 bg-white">
             <tr class="border-b text-gray-500">
               <th class="py-2">Номер</th>
@@ -73,7 +75,7 @@ const isEmpty = computed(() => !isLoading.value && !error.value && !data.value?.
 
       <div
         v-if="!isLoading && data && data.meta.last_page > 1"
-        class="mt-4 flex shrink-0 items-center justify-between text-sm"
+        class="mt-4 flex shrink-0 flex-wrap items-center justify-between gap-2 text-sm"
       >
         <button
           class="rounded border px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
@@ -82,7 +84,7 @@ const isEmpty = computed(() => !isLoading.value && !error.value && !data.value?.
         >
           ← Попередня
         </button>
-        <span class="text-gray-500">
+        <span class="order-first w-full text-center text-gray-500 sm:order-none sm:w-auto">
           Сторінка {{ data.meta.current_page }} з {{ data.meta.last_page }} ({{ data.meta.total }} інвойсів)
         </span>
         <button
