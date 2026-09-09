@@ -4,5 +4,8 @@ set -e
 echo "→ Larastan (backend)"
 docker compose exec -T backend composer analyse
 
+echo "→ tests (backend)"
+docker compose exec -T backend php artisan test
+
 echo "→ typecheck (frontend)"
 docker compose exec -T frontend npm run typecheck
