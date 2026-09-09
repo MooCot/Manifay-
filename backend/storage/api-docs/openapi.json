@@ -1,0 +1,185 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Manifay API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api"
+        }
+    ],
+    "paths": {
+        "/invoices": {
+            "post": {
+                "tags": [
+                    "Invoices"
+                ],
+                "summary": "Створити інвойс",
+                "operationId": "62ead27e7a908ee508c3f24b2319f43a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "number",
+                                    "supplier_name",
+                                    "supplier_tax_id",
+                                    "net_amount",
+                                    "vat_amount",
+                                    "currency",
+                                    "issue_date",
+                                    "due_date"
+                                ],
+                                "properties": {
+                                    "number": {
+                                        "type": "string",
+                                        "example": "INV-0001-ABC",
+                                        "maxLength": 255
+                                    },
+                                    "supplier_name": {
+                                        "type": "string",
+                                        "example": "Acme LLC",
+                                        "maxLength": 255
+                                    },
+                                    "supplier_tax_id": {
+                                        "type": "string",
+                                        "example": "1234567890",
+                                        "maxLength": 255
+                                    },
+                                    "net_amount": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 1000,
+                                        "maximum": 9999999999.99,
+                                        "minimum": 0.01
+                                    },
+                                    "vat_amount": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 200,
+                                        "maximum": 9999999999.99,
+                                        "minimum": 0
+                                    },
+                                    "currency": {
+                                        "type": "string",
+                                        "example": "UAH",
+                                        "maxLength": 3,
+                                        "minLength": 3
+                                    },
+                                    "issue_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-06-01"
+                                    },
+                                    "due_date": {
+                                        "description": "Має бути не раніше issue_date",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-06-15"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Інвойс створено",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Invoice"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Помилка валідації (номер вже існує, due_date раніше issue_date тощо)"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Invoice": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "number": {
+                        "type": "string",
+                        "example": "INV-0001-ABC"
+                    },
+                    "supplier_name": {
+                        "type": "string",
+                        "example": "Acme LLC"
+                    },
+                    "supplier_tax_id": {
+                        "type": "string",
+                        "example": "1234567890"
+                    },
+                    "net_amount": {
+                        "type": "string",
+                        "example": "1000.00"
+                    },
+                    "vat_amount": {
+                        "type": "string",
+                        "example": "200.00"
+                    },
+                    "gross_amount": {
+                        "type": "string",
+                        "example": "1200.00"
+                    },
+                    "currency": {
+                        "type": "string",
+                        "example": "UAH"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "pending",
+                        "enum": [
+                            "pending",
+                            "approved",
+                            "rejected"
+                        ]
+                    },
+                    "issue_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-06-01"
+                    },
+                    "due_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-06-15"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Invoices",
+            "description": "Invoices"
+        }
+    ]
+}
