@@ -31,11 +31,6 @@ class InvoiceRepository
             ->paginate($perPage);
     }
 
-    public function findOrFail(int $id): Invoice
-    {
-        return Invoice::query()->findOrFail($id);
-    }
-
     /**
      * @param  array<string, mixed>  $attributes
      */
