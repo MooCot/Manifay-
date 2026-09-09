@@ -19,6 +19,10 @@ function onSaved(updatedInvoice: Invoice) {
     justSaved.value = false
   }, 2000)
 }
+
+onUnmounted(() => {
+  clearTimeout(justSavedTimeout)
+})
 </script>
 
 <template>

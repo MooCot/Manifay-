@@ -121,6 +121,7 @@ const onSubmit = handleSubmit(async (formValues) => {
       v-if="editable"
       type="submit"
       :disabled="isSubmitting || justSaved"
+      :aria-label="justSaved ? 'Збережено' : undefined"
       class="inline-flex items-center gap-2 rounded bg-indigo-600 px-4 py-2 text-white disabled:opacity-50"
     >
       <svg
