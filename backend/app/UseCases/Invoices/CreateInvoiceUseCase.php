@@ -15,8 +15,6 @@ class CreateInvoiceUseCase
      */
     public function handle(array $attributes): Invoice
     {
-        // gross_amount рахує бекенд сам, не довіряючи клієнтському значенню —
-        // див. CLAUDE.md "Архітектурні рішення" п.3
         $attributes['gross_amount'] = round((float) $attributes['net_amount'] + (float) $attributes['vat_amount'], 2);
         $attributes['status'] = InvoiceStatus::Pending->value;
 

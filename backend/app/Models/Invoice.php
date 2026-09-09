@@ -27,11 +27,6 @@ class Invoice extends Model
     ];
 
     /**
-     * Класичний $casts-масив, а не Laravel 12-івський метод casts():
-     * Larastan (поточна версія) не резолвить типи властивостей із
-     * методу, це каскадом ламало аналіз в UseCase/FormRequest —
-     * поведінково ідентично, Laravel підтримує обидва стилі однаково.
-     *
      * @var array<string, string>
      */
     protected $casts = [

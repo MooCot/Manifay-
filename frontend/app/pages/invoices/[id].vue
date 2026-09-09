@@ -6,8 +6,6 @@ const id = route.params.id as string
 
 const { data, status, error, refresh } = useInvoice(id)
 
-// напряму з відповіді PUT, не рефетч — інакше status на мить стає 'pending',
-// весь блок (деталі+форма) замінюється skeleton'ом, форма розмонтовується
 function onSaved(updatedInvoice: Invoice) {
   if (data.value) {
     data.value.data = updatedInvoice
@@ -59,15 +57,9 @@ function onSaved(updatedInvoice: Invoice) {
         <InvoiceStatusBadge :status="data.data.status" />
       </div>
 
-      <!-- картки з рамкою — візуальне групування замість "голого" тексту в
-           просторі; md:grid-cols-2 — поруч на десктопі, менше вертикального
-           контенту -->
       <div class="grid gap-6 md:grid-cols-2">
         <div class="rounded-lg border border-gray-200 p-4">
           <h2 class="mb-4 text-sm font-semibold text-gray-700">Деталі</h2>
-          <!-- групування замість плаского списку/таблиці — більше візуальної
-               "маси" (заголовки секцій + відступи), краще балансує з формою
-               по висоті, без штучного центрування -->
           <div class="space-y-4 text-sm">
             <div>
               <h3 class="mb-1 text-xs font-medium tracking-wide text-gray-400 uppercase">Постачальник</h3>

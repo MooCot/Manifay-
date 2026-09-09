@@ -26,11 +26,6 @@ const { data, status, error, refresh } = useInvoices(page, sort, direction)
 const isLoading = computed(() => status.value === 'pending')
 const isEmpty = computed(() => !isLoading.value && !error.value && !data.value?.data?.length)
 
-// на мобільному в рядку видно лише номер+статус (sm:table-cell ховає решту) —
-// клік розгортає приховані поля inline, а не одразу веде на іншу сторінку
-// (double-tap-навігація — антипатерн: конфліктує з нативним zoom-жестом,
-// нульова discoverability). На sm+ усі поля вже видно, тому клік одразу
-// переходить на деталі, як і раніше
 const expandedId = ref<number | null>(null)
 
 function isDesktopViewport(): boolean {
@@ -50,9 +45,6 @@ function onRowActivate(invoice: Invoice) {
   <div class="mx-auto flex h-dvh max-w-5xl flex-col p-4 sm:p-6">
     <div class="mb-4 flex shrink-0 flex-wrap items-center justify-between gap-2">
       <h1 class="text-xl font-semibold">Інвойси</h1>
-      <!-- на мобільному колонка "Термін оплати" (а з нею й клікабельний
-           заголовок) прихована sm:table-cell — той самий toggleSort, окрема
-           кнопка, завжди видима незалежно від того, які колонки показані -->
       <button
         type="button"
         class="inline-flex items-center gap-1 rounded border px-2 py-1 text-sm sm:hidden"
@@ -71,11 +63,6 @@ function onRowActivate(invoice: Invoice) {
     <div v-else-if="isEmpty" class="text-gray-500">Інвойсів ще немає.</div>
 
     <template v-else>
-      <!-- min-h-0 обов'язковий для flex-дитини з overflow — інакше вона не
-           стискається і скрол не спрацьовує (класична flexbox-пастка).
-           overflow-x-hidden — горизонтального скролу немає взагалі: на
-           мобільному колонок менше (sm:table-cell ховає зайві), тому нема
-           причини таблиці бути ширшою за екран -->
       <div class="thin-scrollbar min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto">
         <table class="w-full border-collapse text-left text-sm">
           <thead class="sticky top-0 bg-white">

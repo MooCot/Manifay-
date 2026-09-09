@@ -8,7 +8,7 @@ class StoreInvoiceRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // аутентифікація не потрібна за ТЗ
+        return true;
     }
 
     /**
@@ -20,8 +20,6 @@ class StoreInvoiceRequest extends FormRequest
             'number' => ['required', 'string', 'max:255', 'unique:invoices,number'],
             'supplier_name' => ['required', 'string', 'max:255'],
             'supplier_tax_id' => ['required', 'string', 'max:255'],
-            // max — стеля decimal(12,2) колонки (міграція): без цього значення
-            // за межею колонки падали в 500/400 замість чистого 422
             'net_amount' => ['required', 'numeric', 'min:0.01', 'max:9999999999.99'],
             'vat_amount' => ['required', 'numeric', 'min:0', 'max:9999999999.99'],
             'currency' => ['required', 'string', 'size:3'],

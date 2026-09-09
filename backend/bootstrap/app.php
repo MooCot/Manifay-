@@ -23,13 +23,6 @@ return Application::configure(basePath: dirname(__DIR__))
             return response()->json(['message' => $e->getMessage()], 409);
         });
 
-        // Unhandled exception -> 500 (не 400: це помилка сервера, не клієнта).
-        // Laravel вже логує його автоматично до виклику render() (kernel
-        // report()+render() — окремі кроки), тому тут лише формуємо чисту,
-        // людино-зрозумілу відповідь без стектрейсу — незалежно від
-        // APP_DEBUG, деталі йдуть у server-логи, не в API-відповідь.
-        // Не займає те, що Laravel вже коректно мапить самостійно — 422
-        // (ValidationException), 404 (ModelNotFoundException/HttpExceptionInterface).
         $exceptions->render(function (Throwable $e, Request $request) {
             if (! $request->is('api/*')) {
                 return null;

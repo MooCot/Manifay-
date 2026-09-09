@@ -5,8 +5,6 @@ export interface Invoice {
   number: string
   supplier_name: string
   supplier_tax_id: string
-  // decimal-колонки серіалізуються Laravel'ом як string (decimal:2 cast) —
-  // навмисно, щоб уникнути втрати точності при JSON-парсингу float на клієнті
   net_amount: string
   vat_amount: string
   gross_amount: string

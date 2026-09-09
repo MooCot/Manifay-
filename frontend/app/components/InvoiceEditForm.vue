@@ -22,8 +22,6 @@ const [netAmount, netAmountAttrs] = defineField('net_amount')
 const [vatAmount, vatAmountAttrs] = defineField('vat_amount')
 const [dueDate, dueDateAttrs] = defineField('due_date')
 
-// live-прев'ю gross_amount на клієнті — тільки для UX, сервер рахує сам
-// і не довіряє цьому значенню (див. CLAUDE.md, "Архітектурні рішення" п.3)
 const grossPreview = computed(() => {
   const net = Number(netAmount.value) || 0
   const vat = Number(vatAmount.value) || 0
@@ -44,9 +42,6 @@ const onSubmit = handleSubmit(async (formValues) => {
   } catch (e: unknown) {
     const status = e && typeof e === 'object' && 'status' in e ? (e as { status?: number }).status : undefined
     if (status === 422) {
-      // сервер валідує суворіше за клієнтську zod-схему (наприклад max на
-      // сумі) — без цього користувач бачив загальний текст без пояснення,
-      // яке саме поле й чому не пройшло
       const data = (e as { data?: { errors?: Record<string, string[]> } }).data
       if (data?.errors) {
         setErrors(data.errors)

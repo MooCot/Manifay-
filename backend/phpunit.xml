@@ -26,11 +26,6 @@
         <env name="DB_CONNECTION" value="sqlite" force="true"/>
         <env name="DB_DATABASE" value=":memory:" force="true"/>
         <env name="DB_URL" value=""/>
-        <!-- docker-compose встановлює DB_CONNECTION/DB_DATABASE як реальні
-             env-змінні контейнера (у $_SERVER), а force="true" на <env> вище
-             форсує лише getenv()/$_ENV — Laravel читає з $_SERVER першим,
-             тому без цього блоку тести й далі б'ють у справжню MySQL БД
-             (empirically перевірено — 48→0 інвойсів без цього фіксу) -->
         <server name="DB_CONNECTION" value="sqlite" force="true"/>
         <server name="DB_DATABASE" value=":memory:" force="true"/>
         <env name="MAIL_MAILER" value="array"/>

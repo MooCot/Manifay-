@@ -14,13 +14,8 @@ use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
 {
-    // index/show — чисте читання без бізнес-логіки, тому напряму через
-    // Repository, без порожнього UseCase-делегата (див. CLAUDE.md "Архітектура бекенду")
     public function index(Request $request, InvoiceRepository $invoices): JsonResponse
     {
-        // is_string-гвард, не (string)-каст: query('sort[]=x') повертає масив,
-        // каст масиву в рядок валить "Array to string conversion" -> 500/400
-        // замість тихого fallback на дефолт (знайдено рев'ю, перевірено живим запитом)
         $sort = $request->query('sort', 'created_at');
         $direction = $request->query('direction', 'desc');
 
