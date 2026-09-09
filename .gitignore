@@ -6,3 +6,6 @@ Thumbs.db
 
 # особисті налаштування Claude Code (не для команди)
 /.claude/settings.local.json
+
+# робочі аналітичні артефакти кандидата — не частина deliverable
+MODEL-Manifay.md
