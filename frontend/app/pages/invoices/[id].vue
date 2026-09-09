@@ -17,7 +17,7 @@ function onSaved(updatedInvoice: Invoice) {
   clearTimeout(justSavedTimeout)
   justSavedTimeout = setTimeout(() => {
     justSaved.value = false
-  }, 3000)
+  }, 2000)
 }
 </script>
 
