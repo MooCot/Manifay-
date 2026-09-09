@@ -151,10 +151,11 @@ GitHub/GitLab репозиторій, README.md з відповідями, ін�
 
 ## Статичний аналіз (простіше, ніж у wtgspain)
 
-Без GrumPHP-оркестрації, без Deptrac (немає Ports/шарів — нічим перевіряти межі), без git-хуків. Просто команди, запускаються вручну.
+Без GrumPHP-оркестрації, без Deptrac (немає Ports/шарів — нічим перевіряти межі). Git hooks — прості трековані shell-скрипти в `.githooks/` (не Husky — зайва npm-залежність заради того, що вміє сам git), без окремого фреймворка-оркестратора.
 
 - **Backend:** `composer lint` (Laravel Pint, форматування) + `composer analyse` (Larastan/PHPStan рівень 5).
 - **Frontend:** `npm run lint` (`@nuxt/eslint`, офіційний zero-config модуль) + `npm run typecheck` (`nuxt typecheck` через vue-tsc).
+- **Git hooks:** `pre-commit` — Pint + ESLint (швидко, кожен коміт); `pre-push` — Larastan + typecheck (повільніше, рідше). Через `docker compose exec`, тому вимагає запущеного `docker compose up`. `core.hooksPath` — локальне налаштування (`git config core.hooksPath .githooks`), не переноситься автоматично при клонуванні — задокументовано в README.
 
 **Знахідки під час першого прогону (не косметика, реальні речі):**
 - Larastan не резолвив типи з Laravel 12-івського `casts(): array`-методу (каскадом ламало аналіз `UseCase`/`FormRequest`) — повернув класичний `protected $casts = [...]`, поведінково ідентично.

@@ -30,6 +30,12 @@ docker compose exec frontend npm run lint       # ESLint
 docker compose exec frontend npm run typecheck  # vue-tsc
 ```
 
+**Git hooks** (`.githooks/`): pre-commit — Pint + ESLint (швидко), pre-push — Larastan + typecheck (повільніше). Після клонування репозиторію виконайте один раз:
+```bash
+git config core.hooksPath .githooks
+```
+(`core.hooksPath` — локальне налаштування, не переноситься автоматично при клонуванні; хуки вимагають запущеного `docker compose up`, бо виконуються через `exec` у вже живі контейнери.)
+
 ## API
 
 | Метод | Шлях | Опис |
