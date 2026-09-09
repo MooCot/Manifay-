@@ -64,6 +64,16 @@ class InvoicesEndpointTest extends TestCase
         $response->assertJsonCount(2, 'data');
     }
 
+    public function test_it_ignores_array_sort_param_instead_of_crashing(): void
+    {
+        Invoice::factory()->count(2)->create();
+
+        $response = $this->getJson('/api/invoices?sort[]=x&direction[]=y');
+
+        $response->assertStatus(200);
+        $response->assertJsonCount(2, 'data');
+    }
+
     public function test_it_paginates_results(): void
     {
         Invoice::factory()->count(20)->create();
@@ -104,6 +114,15 @@ class InvoicesEndpointTest extends TestCase
 
         $response->assertStatus(201);
         $response->assertJsonPath('data.gross_amount', '120.00');
+    }
+
+    public function test_it_rejects_net_amount_exceeding_column_capacity(): void
+    {
+        $response = $this->postJson('/api/invoices', $this->validInvoicePayload([
+            'net_amount' => 99999999999,
+        ]));
+
+        $response->assertStatus(422);
     }
 
     public function test_it_rejects_due_date_before_issue_date_on_create(): void

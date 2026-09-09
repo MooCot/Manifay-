@@ -25,8 +25,10 @@ class UpdateInvoiceRequest extends FormRequest
         $invoice = $this->route('invoice');
 
         return [
-            'net_amount' => ['required', 'numeric', 'min:0.01'],
-            'vat_amount' => ['required', 'numeric', 'min:0'],
+            // max — стеля decimal(12,2) колонки (міграція): без цього значення
+            // за межею колонки падали в 500/400 замість чистого 422
+            'net_amount' => ['required', 'numeric', 'min:0.01', 'max:9999999999.99'],
+            'vat_amount' => ['required', 'numeric', 'min:0', 'max:9999999999.99'],
             'due_date' => ['required', 'date', 'after_or_equal:'.$invoice->issue_date->format('Y-m-d')],
         ];
     }

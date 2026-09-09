@@ -18,9 +18,15 @@ class InvoiceController extends Controller
     // Repository, без порожнього UseCase-делегата (див. CLAUDE.md "Архітектура бекенду")
     public function index(Request $request, InvoiceRepository $invoices): JsonResponse
     {
+        // is_string-гвард, не (string)-каст: query('sort[]=x') повертає масив,
+        // каст масиву в рядок валить "Array to string conversion" -> 500/400
+        // замість тихого fallback на дефолт (знайдено рев'ю, перевірено живим запитом)
+        $sort = $request->query('sort', 'created_at');
+        $direction = $request->query('direction', 'desc');
+
         $paginator = $invoices->paginate(
-            sortBy: (string) $request->query('sort', 'created_at'),
-            sortDirection: (string) $request->query('direction', 'desc'),
+            sortBy: is_string($sort) ? $sort : 'created_at',
+            sortDirection: is_string($direction) ? $direction : 'desc',
         );
 
         return InvoiceResource::collection($paginator)->response();
