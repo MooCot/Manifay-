@@ -120,20 +120,20 @@ function onRowActivate(invoice: Invoice) {
                 <tr v-if="expandedId === invoice.id" class="border-b bg-gray-50 sm:hidden">
                   <td colspan="5" class="px-2 py-3 text-sm">
                     <dl class="space-y-1">
-                      <div class="flex justify-between">
-                        <dt class="text-gray-500">Постачальник</dt>
-                        <dd>{{ invoice.supplier_name }}</dd>
+                      <div class="flex justify-between gap-2">
+                        <dt class="shrink-0 text-gray-500">Постачальник</dt>
+                        <dd class="text-right">{{ invoice.supplier_name }}</dd>
                       </div>
-                      <div class="flex justify-between">
-                        <dt class="text-gray-500">Сума</dt>
-                        <dd>{{ invoice.gross_amount }} {{ invoice.currency }}</dd>
+                      <div class="flex justify-between gap-2">
+                        <dt class="shrink-0 text-gray-500">Сума</dt>
+                        <dd class="text-right">{{ invoice.gross_amount }} {{ invoice.currency }}</dd>
                       </div>
-                      <div class="flex justify-between">
-                        <dt class="text-gray-500">Термін оплати</dt>
-                        <dd>{{ formatDate(invoice.due_date) }}</dd>
+                      <div class="flex justify-between gap-2">
+                        <dt class="shrink-0 text-gray-500">Термін оплати</dt>
+                        <dd class="text-right">{{ formatDate(invoice.due_date) }}</dd>
                       </div>
                     </dl>
-                    <NuxtLink :to="`/invoices/${invoice.id}`" class="mt-2 inline-block text-indigo-600 underline">
+                    <NuxtLink :to="`/invoices/${invoice.id}`" class="mt-2 inline-block text-indigo-600">
                       Переглянути →
                     </NuxtLink>
                   </td>
