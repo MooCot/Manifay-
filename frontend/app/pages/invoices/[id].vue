@@ -54,12 +54,15 @@ function onSaved() {
            просторі; md:grid-cols-2 — поруч на десктопі, менше вертикального
            контенту -->
       <div class="grid gap-6 md:grid-cols-2">
-        <div class="rounded-lg border border-gray-200 p-4">
+        <div class="flex flex-col rounded-lg border border-gray-200 p-4">
           <h2 class="mb-3 text-sm font-semibold text-gray-700">Деталі</h2>
           <!-- справжня <table>, не grid — колонки природно підлаштовуються під
                контент (короткі дати vs довгі лейбли), а не діляться порівну
-               50/50, звідки й була асиметрія; mx-auto центрує компактну таблицю -->
-          <table class="mx-auto text-sm">
+               50/50, звідки й була асиметрія. Картка вища за таблицю (тягнеться
+               під висоту форми-сусіда в grid), тому центруємо таблицю у
+               вільному просторі під заголовком, а не лишаємо її зверху -->
+          <div class="flex flex-1 items-center justify-center">
+            <table class="text-sm">
             <tbody>
               <tr>
                 <td class="whitespace-nowrap py-1 pr-4 text-gray-500">Постачальник</td>
@@ -86,7 +89,8 @@ function onSaved() {
                 <td class="py-1">{{ new Date(data.data.updated_at).toLocaleString('uk-UA') }}</td>
               </tr>
             </tbody>
-          </table>
+            </table>
+          </div>
         </div>
 
         <div class="rounded-lg border border-gray-200 p-4">
