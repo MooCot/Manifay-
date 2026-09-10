@@ -49,7 +49,7 @@ git config core.hooksPath .githooks
 | POST | `/api/invoices` | створення (без UI — див. компроміси нижче) |
 | PUT | `/api/invoices/{id}` | оновлення (лише для `status = pending`) |
 
-`POST /api/invoices` додатково задокументований у OpenAPI (`backend/app/OpenApi/OpenApiSpec.php` + атрибути на `InvoiceController::store()`/`InvoiceResource`) — саме цей ендпоінт не має UI, тому формальна специфікація дає йому контракт незалежно від фронтенду. Перегенерувати: `docker compose exec backend composer docs` → `backend/storage/api-docs/openapi.json`.
+`POST /api/invoices` додатково задокументований у OpenAPI (`backend/app/OpenApi/OpenApiSpec.php` + атрибути на `InvoiceController::store()`/`InvoiceResource`) — саме цей ендпоінт не має UI, тому формальна специфікація дає йому контракт незалежно від фронтенду. Swagger UI: http://localhost:8000/api/docs. Перегенерувати після зміни атрибутів: `docker compose exec backend composer docs` → `backend/storage/api-docs/openapi.json`.
 
 ## Відповіді на питання завдання
 
