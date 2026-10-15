@@ -1,15 +1,15 @@
-# Manifay — модуль обліку інвойсів
+# Manifay — invoice management module
 
-Full-stack тестове завдання: Nuxt 4 + Laravel 12, мінімальний, але реалістичний модуль для роботи з інвойсами (список, деталі, редагування).
+Full-stack test assignment: Nuxt 4 + Laravel 12, a minimal but realistic module for working with invoices (list, details, editing).
 
-## Стек
+## Stack
 
 - **Frontend:** Nuxt 4 (`ssr: false`), Vue 3.5, TailwindCSS 4, vee-validate + zod
 - **Backend:** PHP 8.3, Laravel 12
 - **DB:** MySQL 8.0
 - **Docker:** docker-compose (backend + frontend + db)
 
-## Запуск
+## Running it
 
 ```bash
 docker compose up
@@ -17,84 +17,84 @@ docker compose up
 
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:8000/api
-- OpenAPI-спека (`POST /api/invoices`): http://localhost:8000/api/docs (Swagger UI; сирий JSON — http://localhost:8000/api/openapi.json)
-- При першому старті `backend`-сервіс сам виконує `composer install`, міграції та сідинг (демо-дані, включно з approved/rejected інвойсами).
+- OpenAPI spec (`POST /api/invoices`): http://localhost:8000/api/docs (Swagger UI; raw JSON — http://localhost:8000/api/openapi.json)
+- On first start the `backend` service runs `composer install`, migrations and seeding itself (demo data, including approved/rejected invoices).
 
-## Якість коду
+## Code quality
 
 ```bash
-docker compose exec backend composer lint      # Pint — форматування
-docker compose exec backend composer analyse   # Larastan — статичний аналіз
-docker compose exec backend php artisan test    # PHPUnit — Feature-тести
+docker compose exec backend composer lint      # Pint — formatting
+docker compose exec backend composer analyse   # Larastan — static analysis
+docker compose exec backend php artisan test    # PHPUnit — Feature tests
 docker compose exec frontend npm run lint       # ESLint
 docker compose exec frontend npm run typecheck  # vue-tsc
 ```
 
-Тестів на фронтенді немає (жодного тест-раннера навіть не встановлено) — див. "Що б ти покращив у production-версії?".
+No frontend tests (not even a test runner is installed) — see "What would you improve for a production version?".
 
-**Git hooks** (`.githooks/`): pre-commit — Pint + ESLint (швидко), pre-push — Larastan + typecheck (повільніше). Після клонування репозиторію виконайте один раз:
+**Git hooks** (`.githooks/`): pre-commit — Pint + ESLint (fast), pre-push — Larastan + typecheck (slower). After cloning the repo, run once:
 ```bash
 git config core.hooksPath .githooks
 ```
-(`core.hooksPath` — локальне налаштування, не переноситься автоматично при клонуванні; хуки вимагають запущеного `docker compose up`, бо виконуються через `exec` у вже живі контейнери.)
+(`core.hooksPath` is a local setting, not carried over automatically on clone; the hooks require `docker compose up` to be running, since they execute via `exec` into already-live containers.)
 
 ## API
 
-| Метод | Шлях | Опис |
+| Method | Path | Description |
 |---|---|---|
-| GET | `/api/invoices` | список інвойсів — пагінація, сортування (`?sort=created_at\|due_date&direction=asc\|desc&page=`) |
-| GET | `/api/invoices/{id}` | один інвойс |
-| POST | `/api/invoices` | створення (без UI — див. компроміси нижче) |
-| PUT | `/api/invoices/{id}` | оновлення (лише для `status = pending`) |
+| GET | `/api/invoices` | invoice list — pagination, sorting (`?sort=created_at\|due_date&direction=asc\|desc&page=`) |
+| GET | `/api/invoices/{id}` | a single invoice |
+| POST | `/api/invoices` | creation (no UI — see trade-offs below) |
+| PUT | `/api/invoices/{id}` | update (only for `status = pending`) |
 
-`POST /api/invoices` додатково задокументований у OpenAPI (`backend/app/OpenApi/OpenApiSpec.php` + атрибути на `InvoiceController::store()`/`InvoiceResource`) — саме цей ендпоінт не має UI, тому формальна специфікація дає йому контракт незалежно від фронтенду. Swagger UI: http://localhost:8000/api/docs. Перегенерувати після зміни атрибутів: `docker compose exec backend composer docs` → `backend/storage/api-docs/openapi.json`.
+`POST /api/invoices` is additionally documented in OpenAPI (`backend/app/OpenApi/OpenApiSpec.php` + attributes on `InvoiceController::store()`/`InvoiceResource`) — this is precisely the endpoint with no UI, so the formal spec gives it a contract independent of the frontend. Swagger UI: http://localhost:8000/api/docs. Regenerate after changing the attributes: `docker compose exec backend composer docs` → `backend/storage/api-docs/openapi.json`.
 
-## Відповіді на питання завдання
+## Answers to the assignment questions
 
-### 1. Як ти структурував frontend і backend?
+### 1. How did you structure the frontend and backend?
 
-**Backend:** `Controller (тонкий) → UseCase → Repository`, без Ports/інтерфейсів і без окремого Domain-шару — Eloquent-модель одночасно є і persistence, і носієм даних. `UseCase` існує лише там, де є реальна бізнес-логіка (`CreateInvoiceUseCase`, `UpdateInvoiceUseCase` — обчислення `gross_amount`, guard на `status`); для чистого читання (`index`/`show`) контролер звертається напряму до `Repository`, без порожнього делегата.
+**Backend:** `Controller (thin) → UseCase → Repository`, without Ports/interfaces and without a separate Domain layer — the Eloquent model is both the persistence and the data carrier at once. A `UseCase` exists only where there's actual business logic (`CreateInvoiceUseCase`, `UpdateInvoiceUseCase` — computing `gross_amount`, guarding on `status`); for plain reads (`index`/`show`) the controller talks directly to the `Repository`, without an empty delegate.
 
-**Frontend:** мінімалістична конвенція Nuxt 4 (`app/pages`, `app/components`, `app/composables`, `app/schemas`, `app/types`), без власного feature-folder групування — один невеликий модуль не виправдовує додаткову структуру понад те, що дає сама Nuxt-конвенція.
+**Frontend:** the minimalist Nuxt 4 convention (`app/pages`, `app/components`, `app/composables`, `app/schemas`, `app/types`), with no custom feature-folder grouping of its own — one small module doesn't justify additional structure beyond what the Nuxt convention already gives.
 
-### 2. Які компроміси ти зробив і чому?
+### 2. What trade-offs did you make, and why?
 
-- **Немає create-форми на фронтенді.** Секції ТЗ 5-6 описують тільки список/деталі/редагування — форми створення там немає, хоча `POST /api/invoices` вимагається бекендом. Реалізував `POST` повністю (з валідацією), демо-дані наповнюються через `DatabaseSeeder`. Оскільки ендпоінт не має UI-споживача (і тому "висить у повітрі" без формального контракту), додатково задокументував його в OpenAPI — див. розділ [API](#api).
-- **Немає механізму зміни статусу.** ТЗ ніде не описує перехід `pending → approved/rejected`. Замість окремого API — `InvoiceSeeder` одразу створює частину інвойсів зі статусами `approved`/`rejected`, щоб на реальних даних продемонструвати заблоковану edit-форму.
-- **`gross_amount` не приймається як вхідне поле.** ТЗ формулює `gross_amount = net_amount + vat_amount` як правило валідації (ніби клієнт надсилає значення, а сервер звіряє). Замість цього бекенд сам обчислює `gross_amount` і ігнорує будь-яке клієнтське значення — суворіше за буквальне трактування (неможливо надіслати неузгоджене число), той самий інваріант виконано.
-- **Без Ports/інтерфейсів між `UseCase` і `Repository`.** Свідомо — один бекенд, одна БД, заміна сховища не потрібна; менше боілерплейту під бюджет 4-6 годин. Мінус: `UseCase` жорстко зв'язаний з конкретним Eloquent-класом, юніт-тест без реальної БД складніший (треба мокати конкретний клас, не інтерфейс).
-- **CORS замість Nuxt server-проксі.** Простіше для двоконтейнерного docker-compose, не додає проміжного шару заради задачі, де немає що ним ховати.
-- **`ssr: false` у Nuxt.** Внутрішня CRUD-адмінка без потреби в SEO/SSR — Nuxt лишається у стеку (вимога ТЗ), але без SSR-складності, яка тут не потрібна.
+- **No create form on the frontend.** Sections 5-6 of the assignment describe only the list/details/editing — there's no creation form there, even though `POST /api/invoices` is required by the backend. Implemented `POST` in full (with validation); demo data is populated via `DatabaseSeeder`. Since the endpoint has no UI consumer (and therefore "hangs in the air" without a formal contract), it's additionally documented in OpenAPI — see the [API](#api) section.
+- **No status-change mechanism.** The assignment never describes a `pending → approved/rejected` transition. Instead of a separate API — `InvoiceSeeder` directly creates some invoices with `approved`/`rejected` statuses, to demonstrate the locked edit form on real data.
+- **`gross_amount` isn't accepted as an input field.** The assignment phrases `gross_amount = net_amount + vat_amount` as a validation rule (as if the client sends the value and the server checks it). Instead, the backend computes `gross_amount` itself and ignores any client-supplied value — stricter than the literal reading (an inconsistent number can't be sent at all), the same invariant is enforced.
+- **No Ports/interfaces between `UseCase` and `Repository`.** Deliberate — one backend, one DB, no need to swap storage; less boilerplate for a 4-6 hour budget. Downside: `UseCase` is tightly coupled to a concrete Eloquent class, making a unit test without a real DB harder (you'd have to mock the concrete class, not an interface).
+- **CORS instead of a Nuxt server proxy.** Simpler for a two-container docker-compose, doesn't add an intermediate layer for a task where there's nothing to hide behind one.
+- **`ssr: false` in Nuxt.** An internal CRUD admin screen with no need for SEO/SSR — Nuxt stays in the stack (an assignment requirement), but without the SSR complexity that isn't needed here.
 
-### 3. Що б ти покращив у production-версії?
+### 3. What would you improve for a production version?
 
-- Ports/інтерфейси для `Repository`, якби знадобилась заміна сховища або чисте юніт-тестування `UseCase` без реальної БД.
-- Явний ендпоінт зміни статусу (`PATCH /api/invoices/{id}/status`) з власною валідацією переходів (наприклад, заборона `approved → pending`).
-- Аутентифікація та авторизація (явно поза скоупом за ТЗ, але в production обов'язкова для фінансових даних).
-- Фільтрація за статусом/постачальником у `GET /api/invoices` (зараз — пагінація й сортування за `created_at`/`due_date` є, фільтрів немає).
-- Ідемпотентність `POST /api/invoices`. Зараз захищена лише унікальність рядка в БД (`unique:invoices,number`) — повторний POST з тим самим `number` отримає `422`, дубль не створиться. Але це не ідемпотентність: клієнт при retry (напр. після втрати мережі) побачить помилку, а не ID вже створеного інвойса, і не зможе відрізнити "мій же retry" від "хтось інший ввів той самий номер". Правильне рішення — `Idempotency-Key`-заголовок (як у Stripe): клієнт генерує ключ на спробу сабміту, сервер за цим ключем повертає той самий успішний результат повторно, а не обробляє запит заново.
-- Тести на фронтенді — зараз жодного тест-раннера не встановлено (Vitest/@vue/test-utils). Бекенд покритий Feature-тестами (`php artisan test`), фронтенд — ні.
-- Попередження про незбережені зміни при виході зі сторінки — зараз дані форми тихо губляться при переході/закритті без сабміту.
-- Пошук/фільтр у списку (по номеру, постачальнику) — зараз лише сортування й пагінація, при сотнях інвойсів реально потрібен пошук.
-- Централізовані сповіщення про мережеві помилки — кожна сторінка зараз сама малює свій inline error-блок, немає єдиного патерну.
-- Індикатор прогресу між переходами сторінок (список → деталі) — між кліком на рядок і появою skeleton немає жодного миттєвого візуального фідбеку.
-- Design-токени/компонентна бібліотека замість ad-hoc Tailwind-класів на кожному елементі — поточний підхід погано масштабується за межі одного невеликого модуля.
-- Локалізація (i18n) — весь текст хардкоджений українською.
-- Створення інвойса через чергу — зараз `CreateInvoiceUseCase` виконується синхронно прямо в HTTP-запиті. Для production варто винести у `CreateInvoiceJob` через Redis-чергу, щоб важкі операції (майбутня інтеграція з бухгалтерською системою, сповіщення) не блокували відповідь клієнту.
-- Redis для кешу і черг — зараз `QUEUE_CONNECTION=sync` (черга виконується синхронно, фактично її немає) і `CACHE_STORE=array` (in-memory, не персистентний, не shared між процесами/воркерами). Redis дав би реальний persistent-кеш (напр. кешування списку інвойсів) і робочу асинхронну чергу.
-- Схема БД — `supplier_name`/`supplier_tax_id` зараз дублюються в кожному рядку `invoices` замість окремої таблиці `suppliers` (нормалізація, уникнення розсинхронізації даних постачальника між інвойсами). Також немає індексів на `due_date`/`status` (сортування/фільтрація підуть full table scan при зростанні обсягу) і немає audit-полів (`created_by`/`updated_by`) — важливо для фінансових даних.
+- Ports/interfaces for `Repository`, in case storage needed to be swapped or `UseCase` needed clean unit testing without a real DB.
+- An explicit status-change endpoint (`PATCH /api/invoices/{id}/status`) with its own transition validation (e.g. forbidding `approved → pending`).
+- Authentication and authorization (explicitly out of scope per the assignment, but mandatory in production for financial data).
+- Filtering by status/supplier in `GET /api/invoices` (currently there's pagination and sorting by `created_at`/`due_date`, but no filters).
+- Idempotency of `POST /api/invoices`. Currently only protected by a DB row uniqueness constraint (`unique:invoices,number`) — a repeated POST with the same `number` gets a `422`, no duplicate is created. But that's not idempotency: on retry (e.g. after a lost connection) the client sees an error rather than the ID of the already-created invoice, and can't tell "this is my own retry" apart from "someone else entered the same number". The correct solution is an `Idempotency-Key` header (as in Stripe): the client generates a key per submission attempt, and the server returns the same successful result for that key again rather than reprocessing the request.
+- Frontend tests — currently no test runner is installed at all (Vitest/@vue/test-utils). The backend is covered by Feature tests (`php artisan test`), the frontend isn't.
+- A warning about unsaved changes when leaving the page — currently form data is silently lost on navigating away or closing without submitting.
+- Search/filter in the list (by number, supplier) — currently only sorting and pagination; with hundreds of invoices, search becomes genuinely necessary.
+- Centralized network-error notifications — each page currently draws its own inline error block, there's no single pattern.
+- A progress indicator between page transitions (list → details) — there's no instant visual feedback between clicking a row and the skeleton appearing.
+- Design tokens/a component library instead of ad-hoc Tailwind classes on every element — the current approach doesn't scale well beyond one small module.
+- Localization (i18n) — all text is currently hardcoded in Ukrainian.
+- Creating an invoice via a queue — currently `CreateInvoiceUseCase` runs synchronously right inside the HTTP request. For production it's worth moving it to a `CreateInvoiceJob` via a Redis queue, so heavy operations (a future accounting-system integration, notifications) don't block the client's response.
+- Redis for cache and queues — currently `QUEUE_CONNECTION=sync` (the queue runs synchronously, effectively there is none) and `CACHE_STORE=array` (in-memory, non-persistent, not shared between processes/workers). Redis would give a real persistent cache (e.g. caching the invoice list) and a working async queue.
+- DB schema — `supplier_name`/`supplier_tax_id` are currently duplicated on every `invoices` row instead of a separate `suppliers` table (normalization, avoiding supplier-data desync between invoices). Also no indexes on `due_date`/`status` (sorting/filtering will full-table-scan as volume grows) and no audit fields (`created_by`/`updated_by`) — important for financial data.
 
-### 4. Які UX edge cases ти врахував?
+### 4. What UX edge cases did you account for?
 
-- Порожній список інвойсів — окремий стан, не порожня таблиця.
-- Помилка завантаження списку/деталей — повідомлення + повторна спроба, не вічний спінер.
-- Loading — skeleton-заглушки (форма таблиці/картки), не просто текст "Завантаження…".
-- Невалідний/неіснуючий `id` в URL — явний "не знайдено", а не безкінечне завантаження.
-- Повернення зі сторінки деталей інвойса до списку не скидає сторінку й сортування — "← До списку" працює через `router.back()`, ідентично нативній стрілці браузера.
-- Заблокована edit-форма для `status != pending` — кнопка "Зберегти" повністю схована (не просто `disabled`), з поясненням причини.
-- Гонка статусу між завантаженням форми і сабмітом — окрема обробка 409 (інвойс уже не `pending`) і 422 (провалилась серверна валідація), а також мережевої помилки під час сабміту (окрема гілка з проханням перевірити зʼєднання).
-- Округлення при live-перерахунку `gross_amount` на клієнті (уникнення float-похибок на кшталт 0.1+0.2).
-- Спінер + "Зберігаємо…" на кнопці під час сабміту форми, зелене підтвердження "✓ Збережено" біля номера інвойса після успіху — кнопка лишається заблокованою, поки воно не зникне (2с), щоб унеможливити повторний сабміт.
-- Довгі значення в колонках списку (`supplier_name`, `number`) — обрізання з `title`-тултипом.
-- Адаптивність — на мобільному таблиця показує лише Номер+Статус (решта — по тапу, inline, без переходу на іншу сторінку), сортування за терміном оплати доступне окремою кнопкою.
-- Доступність — `label`/`input` звʼязані через `for`/`id`, `aria-invalid`/`aria-describedby` на помилках валідації, повна клавіатурна навігація рядків таблиці.
+- Empty invoice list — a distinct state, not an empty table.
+- Error loading the list/details — a message + retry, not an infinite spinner.
+- Loading — skeleton placeholders (table/card shape), not just a "Loading…" text.
+- Invalid/nonexistent `id` in the URL — an explicit "not found", instead of infinite loading.
+- Returning from the invoice details page to the list doesn't reset the page or sorting — "← Back to list" works via `router.back()`, identical to the browser's native back button.
+- Locked edit form for `status != pending` — the "Save" button is fully hidden (not just `disabled`), with an explanation of why.
+- Race between loading the form and submitting — separate handling for 409 (invoice is no longer `pending`) and 422 (server validation failed), plus a network error during submit (a separate branch asking to check the connection).
+- Rounding during live client-side recalculation of `gross_amount` (avoiding float errors like 0.1+0.2).
+- A spinner + "Saving…" on the button during form submit, a green "✓ Saved" confirmation next to the invoice number on success — the button stays disabled until it disappears (2s), to prevent a duplicate submit.
+- Long values in list columns (`supplier_name`, `number`) — truncated with a `title` tooltip.
+- Responsiveness — on mobile the table shows only Number+Status (the rest is revealed inline by tapping, without navigating to another page), sorting by due date is available via a separate button.
+- Accessibility — `label`/`input` linked via `for`/`id`, `aria-invalid`/`aria-describedby` on validation errors, full keyboard navigation of table rows.
